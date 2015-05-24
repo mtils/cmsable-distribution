@@ -1,0 +1,53 @@
+<? /** @var \Prodis\Forms\Field\NestedSelectField $item */?>
+    <div class="form-group<? if(!$item->isValid()) echo ' has-error'; ?>">
+        <? if(!$item->hasCssClass('no-label')): ?>
+        <label class="control-label" for="<?=$item->id ?>"><?=$item->title ?></label>
+        <? endif ?>
+        <? if($item->className == 'NestedSelectField'): ?>
+            <select <?=$item->addCssClass('form-control')->addCssClass('input-sm')->addCssClass('selectpicker')->attributes->set('data-live-search','true')?>>
+            <? if($item->hasGroups()): ?>
+            <? foreach($item->getGrouped() as $group=>$options): ?>
+                <optgroup label="<?= $group ?>">
+                <? foreach($options as $option): ?>
+                    <? if($node->isRootNode()): ?>
+                    <? else: ?>
+                    <option value="<?= $option->key ?>"<?= $option->selected ? ' selected="selected"' : '' ?>><?= $option ?></option>
+                    <? endif ?>
+                <? endforeach ?>
+                </optgroup>
+            <? endforeach ?>
+            <? else: ?>
+            <? $hadRootNode = FALSE ?>
+            <? foreach($item as $option): ?>
+                <? $node = $option->getSrc() ?>
+                <? if($node->isRootNode()): ?>
+                    <?= $hadRootNode ? '</optgroup>' : '' ?>
+                    <optgroup label="<?= $option ?>">
+                        <?if($item->getWithRoot()):?>
+                        <option class="depth-<?= $node->getDepth() ?>" value="<?= $option->key ?>"<?= $option->selected ? ' selected="selected"' : '' ?>><?= $option ?></option>
+                        <? endif ?>
+                    <? $hadRootNode = TRUE ?>
+                <? else: ?>
+                    <option class="depth-<?= $node->getDepth() ?>" value="<?= $option->key ?>"<?= $option->selected ? ' selected="selected"' : '' ?>><?= $option ?></option>
+                <? endif ?>
+                <? endforeach ?>
+                <? if($hadRootNode): ?>
+                    </optgroup>
+                <? endif ?>
+            <? endif ?>
+            </select>
+        <? elseif($item->className == 'RadioButtonsField'): ?>
+            <? foreach($item as $option): ?>
+                <div class="radio">
+                    <label><input type="radio" name="<?=$item->name ?>" value="<?= $option->key ?>" <?= $option->selected ? ' checked="checked"' : '' ?>/> <?= $option ?></label>
+                </div>
+            <? endforeach ?>
+        <? endif ?>
+        <? if(!$item->isValid()): ?>
+        <? foreach($item->messages as $error): ?>
+        <span class="help-inline"><?= $error ?></span>
+        <? endforeach ?>
+        <? elseif($item->description): ?>
+        <span class="help-inline"><?= $item-description ?></span>
+        <? endif ?>
+    </div>

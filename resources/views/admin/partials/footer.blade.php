@@ -1,0 +1,1 @@
+<small>Informationen vom {{date('d.m.Y H:i')}}</small>

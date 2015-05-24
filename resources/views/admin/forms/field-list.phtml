@@ -1,0 +1,144 @@
+<? /****************************************************************************
+   /
+   / Tabs Rendering
+   /
+   *************************************************************************/ ?>
+<? if($item->parentIsFieldList() && $item->getParent()->isTabBar()): ?>
+    <div class="tab-pane<? if($item->isFirstList()): ?> active<? endif ?>" id="<?= $item->id ?>">
+    <? foreach ($item as $field) : ?>
+        <?= $field ?>
+    <? endforeach ?>
+    </div>
+
+<? /****************************************************************************
+   /
+   / Fieldsets containing other fieldsets
+   /
+   *************************************************************************/ ?>
+<? elseif($childLists = $item->fieldLists()): ?>
+
+    <? $fieldListCount = count($childLists); ?>
+
+    <? // Fieldset under fieldset, when explicit setted or not enough lists ?>
+    <? if ($item->hasCssClass('vertical') || $fieldListCount < 2) : ?>
+            <? foreach ($childLists as $fieldList) : ?>
+                <?= $fieldList ?>
+            <? endforeach ?>
+
+    <? // Half-sized fieldsets ?>
+    <? else: ?>
+        <? $fieldListIndex = 0 ?>
+        <? foreach ($childLists as $fieldList) : ?>
+            <? if(($fieldListIndex % 2) == 0): ?>
+                <div class="row">
+                    <?= $fieldList ?>
+                <? else: ?>
+                    <?= $fieldList ?>
+                </div> <!-- /.row -->
+            <? endif ?>
+            <? $fieldListIndex++ ?>
+        <? endforeach ?>
+    <? endif ?>
+
+    <? // Catch any hidden fields, other fields are not allowed as anchestors ?>
+    <? foreach ($item as $field) : ?>
+        <? if($field->className == 'HiddenField'): ?>
+            <input <?=$field->attributes ?> />
+        <? endif ?>
+    <? endforeach ?>
+
+<? /****************************************************************************
+   /
+   / Render fieldset if the parent is also a fieldlist
+   /
+   *************************************************************************/ ?>
+<? elseif ($item->parentIsFieldList()) : ?>
+    <? if ($item->getParent()->hasCssClass('vertical')): ?>
+
+
+        <fieldset class="col-xs-12">
+            <div class="col-xs-12">
+                <? if($item->hasTitle()): ?>
+                    <legend><?= $item->title ?></legend>
+                <? endif ?>
+
+                <? // Field under Field ?>
+                <? if (!$item->hasCssClass('horizontal-split')) : ?>
+                    <? foreach ($item as $field) : ?>
+                        <?= $field ?>
+                    <? endforeach ?>
+
+                <? // Rows of two fields ?>
+                <? else: ?>
+                    <? $fieldCount = count($item) ?>
+                    <? $fieldIndex = 0 ?>
+                    <? foreach ($item as $field) : ?>
+                        <? if($field->className == 'HiddenField'): ?>
+                            <input <?=$field->attributes ?> />
+                        <? else: ?>
+                            <? if(($fieldIndex % 2) == 0): ?>
+                                <div class="row">
+                                    <span class="col-xs-6"><?= $field ?></span>
+                                <? else: ?>
+                                    <span class="col-xs-6"><?= $field ?></span>
+                                </div> <!-- /.row -->
+                            <? endif ?>
+                            <? $fieldIndex++ ?>
+                        <? endif ?>
+                    <? endforeach ?>
+                <? endif ?>
+            </div>
+        </fieldset>
+
+
+    <? else: ?>
+        <fieldset class="col-xs-6">
+            <div class="col-xs-12">
+                <? if($item->hasTitle()): ?>
+                    <legend><?= $item->title ?></legend>
+                <? endif ?>
+                <? foreach ($item as $field) : ?>
+                    <?= $field ?>
+                <? endforeach ?>
+            </div>
+        </fieldset>
+    <? endif ?>
+
+<? /****************************************************************************
+   /
+   / Render just the fields in lines of two fields
+   /
+   *************************************************************************/ ?>
+<? elseif($item->hasCssClass('horizontal-split')): ?>
+
+    <? $fieldCount = count($item) ?>
+    <? $fieldIndex = 0 ?>
+    <? foreach ($item as $field) : ?>
+        <? if($field->className == 'HiddenField'): ?>
+            <input <?=$field->attributes ?> />
+        <? else: ?>
+            <? if(($fieldIndex % 2) == 0): ?>
+                <div class="row">
+                    <?= $field ?>
+                <? else: ?>
+                    <?= $field ?>
+                </div> <!-- /.row -->
+            <? endif ?>
+            <? $fieldIndex++ ?>
+        <? endif ?>
+    <? endforeach ?>
+
+<? /****************************************************************************
+   /
+   / Render just the fields if parent is no fieldlist (form or null)
+   /
+   *************************************************************************/ ?>
+<? else: ?>
+    <? foreach ($item as $field) : ?>
+        <? if($field->className == 'HiddenField'): ?>
+            <input <?=$field->attributes ?> />
+        <? else: ?>
+            <?= $field ?>
+        <? endif ?>
+    <? endforeach ?>
+<? endif ?>

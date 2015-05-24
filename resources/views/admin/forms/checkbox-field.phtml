@@ -1,0 +1,10 @@
+<div class="checkbox">
+<label class="control-label" title="<?= $item->toolTip ?>"><input <?= $item->attributes ?>/> <?= $item->title ?></label>
+<? if(!$item->isValid()): ?>
+<? foreach($item->messages as $error): ?>
+<span class="help-inline"><?= $error ?></span>
+<? endforeach ?>
+<? elseif($item->description): ?>
+<br/><span class="help-inline"><?= $item->description ?></span>
+<? endif ?>
+</div>

@@ -1,0 +1,55 @@
+<? $item->setAttribute('role','form') ?>
+
+<form <?= $item->attributes ?>>
+
+<? $hasTabs = $item->fields->isTabBar() ?>
+
+<? if($item->fields->isTabBar()): ?>
+
+<? /****************************************************************************
+   /
+   / Tabs Rendering
+   /
+   *************************************************************************/ ?>
+
+<?  // Tab-Bar ?>
+    <div class="nav-tabs-custom">
+        <?= $item->fields ?>
+<? else: ?>
+
+<? /****************************************************************************
+   /
+   / Normal Fieldsets
+   /
+   *************************************************************************/ ?>
+
+    <div class="box">
+        <div class="box-body">
+            <?= $item->fields ?>
+        </div> <!-- /.box-body -->
+
+<? endif // No switchable ?>
+
+<? /****************************************************************************
+   /
+   / Actions/Submit-Button(s)
+   /
+   *************************************************************************/ ?>
+
+        <div class="clearfix"></div>
+
+        <div class="box-footer">
+            <? foreach($item->actions as $action): ?>
+                <? if(!$action->cssClasses->contains('btn')): ?>
+                    <? if($action->value == 'delete'): ?>
+                        <? $action->cssClasses->append('btn')->append('btn-danger') ?>
+                    <? else: ?>
+                        <? $action->cssClasses->append('btn')->append('btn-primary') ?>
+                    <? endif; ?>
+                <? endif ?>
+                <button type="submit" name="<?= $action->action ?>" value="<?= $action->value ?>" class="<?= $action->cssClasses ?>"><?= $action->title ?></button>
+            <? endforeach ?>
+        </div> <!-- /.box-footer -->
+    </div> <!-- /.nav-tabs-custom | /.box -->
+
+</form>

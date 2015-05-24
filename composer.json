@@ -1,0 +1,24 @@
+{
+    "name": "ems/cmsable-distribution",
+    "description": "This repository contains the actual cms files of cmsable",
+    "type": "library",
+    "require": {
+        "ems/cmsable": "dev-master",
+        "ems/collection": "0.1.*",
+        "ems/signal": "0.1.*",
+        "ems/xtype": "0.1.*",
+        "ems/formobject": "0.2.*",
+        "ems/versatile": "dev-master"
+    },
+    "require-dev": {
+        "mockery/mockery": "~0.9"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Tils",
+            "email": "mtils@web-utils.de"
+        }
+    ],
+    "minimum-stability": "dev"
+}

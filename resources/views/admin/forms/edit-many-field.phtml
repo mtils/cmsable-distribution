@@ -1,0 +1,71 @@
+    <div class="form-group">
+        <label class="control-label<? if(!$item->isValid()) echo ' has-error'; ?>" for="<?=$item->id ?>"><?=$item->title ?></label>
+        <?php
+
+            $draggable = $item->hasCssClass('draggable');
+            $addable = $item->hasCssClass('addable');
+            $removable = $item->hasCssClass('removable');
+
+        ?>
+        <? $templateForm = $item->formTemplate(); ob_start(); ?>
+            <? foreach($templateForm->fields as $field): ?>
+                <? $field->addCssClass('no-label') ?>
+                <? if($field->className == 'HiddenField'): ?>
+                <?= $field ?>
+                <? else: ?>
+                <td><?= $field ?></td>
+                <? endif ?>
+            <? endforeach ?>
+            <? if($removable): ?>
+                <td><a href="#" class="row-remove" title="Löschen"><span class="glyphicon glyphicon-remove"></span></a></td>
+            <? endif ?>
+        <? $templateHtml = ob_get_clean() ?>
+        <div class="hidden row-template"><?= htmlentities($templateHtml) ?></div>
+
+        <table class="table table-bordered inline-edit">
+            <thead>
+                <tr>
+                <? foreach($item->fields as $column): ?>
+                    <? if($column->className == 'HiddenField'):
+                        continue;
+                    endif ?>
+                    <th><?= $column->title ?></th>
+                <? endforeach ?>
+                <? if($removable): ?>
+                    <th></th>
+                <? endif ?>
+                </tr>
+            </thead>
+            <? if($addable): ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="100"><a href="#" class="row-add"><?= $item->getAddItemTitle() ?></a></td>
+                    </tr>
+                </tfoot>
+            <? endif ?>
+            <tbody>
+            <? foreach($item as $form): ?>
+                <tr class="itemrow">
+                <? foreach($form->fields as $field): ?>
+                    <? $field->addCssClass('no-label') ?>
+                    <? if($field->className == 'HiddenField'): ?>
+                    <?= $field ?>
+                    <? else: ?>
+                    <td><?= $field ?></td>
+                    <? endif ?>
+                <? endforeach ?>
+                <? if($removable): ?>
+                    <td><a href="#" class="row-remove" title="<?= $item->getRemoveItemTitle() ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <? endif ?>
+                </tr>
+            <? endforeach ?>
+            </tbody>
+        </table>
+        <? if(!$item->isValid()): ?>
+        <? foreach($item->messages as $error): ?>
+        <span class="help-inline"><?= $error ?></span>
+        <? endforeach ?>
+        <? elseif($item->description): ?>
+        <span class="help-inline"><?= $item-description ?></span>
+        <? endif ?>
+    </div>
