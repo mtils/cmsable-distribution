@@ -1,7 +1,7 @@
 <?php namespace Ems\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Ems\App\Managers\UserManager;
+use Ems\App\Repositories\UserRepository;
 use Ems\App\Http\Requests\UserRequest;
 
 use Cmsable\Http\Resource\ShowRequest;
@@ -14,22 +14,22 @@ use Ems\App\Http\Forms\UserForm;
 class UserController extends Controller
 {
 
-    protected $manager;
+    protected $repository;
 
-    public function __construct(UserManager $manager)
+    public function __construct(UserRepository $repository)
     {
-        $this->manager = $manager;
+        $this->repository = $repository;
         $this->middleware('auth');
     }
 
     public function show(ShowRequest $request, $id)
     {
-        return $this->manager->findOrFail($id);
+        return $this->repository->findOrFail($id);
     }
 
     public function index()
     {
-        return $this->manager->getModel()->all();
+        return $this->repository->getModel()->all();
     }
 
     public function edit(EditRequest $request, UserForm $form,  $id)
@@ -43,7 +43,7 @@ class UserController extends Controller
     public function update(UserRequest $request, $id)
     {
         $user = $request->findModel($id);
-        $this->manager->update($user, $request->casted());
+        $this->repository->update($user, $request->casted());
         return redirect()->route('users.edit',[$id]);
     }
 

@@ -1,11 +1,11 @@
-<?php namespace Ems\App\Managers;
+<?php namespace Ems\App\Repositories;
 
-use Cmsable\Model\Resource\EloquentResourceManager;
+use Cmsable\Resource\EloquentRepository;
 use Illuminate\Database\Eloquent\Model;
 use FormObject\Form;
 use App;
 
-class UserManager extends EloquentResourceManager
+class UserRepository extends EloquentRepository
 {
 
     public static $modelClass = 'App\User';
@@ -15,10 +15,6 @@ class UserManager extends EloquentResourceManager
     public static $formClass = 'Ems\App\Http\Forms\UserForm';
 
     protected $userModel;
-
-    public function __construct()
-    {
-    }
 
     public function getModel()
     {
