@@ -6,7 +6,7 @@
         <? if(!$item->hasCssClass('no-label')): ?>
             <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?></label>
         <? endif ?>
-        <? if($item->className == 'TextField' && $item->multiLine): ?>
+        <? if($item instanceof \FormObject\Field\TextField && $item->multiLine): ?>
             <textarea <?= $item->attributes->without('value') ?>><?= $item->value ?></textarea>
         <? elseif($item->className == 'UrlSegmentField'): ?>
         <div class="input-group">

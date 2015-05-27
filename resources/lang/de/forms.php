@@ -3,17 +3,29 @@
 return [
 
     'base' => [
-        'send'              => 'Absenden',
-        'change'            => 'Ändern',
-        'field_confirmed'   => ':attribute wiederholen'
+        'field_confirmed'   => ':attribute wiederholen',
+    ],
+
+    'actions' => [
+        'send'              => ['title'=>'Absenden'],
+        'change'            => ['title'=>'Ändern'],
+        'save'              => ['title'=>'Speichern'],
+        'create'            => ['title'=>'Anlegen'],
+        'submit'            => ['title'=>'Absenden']
+    ],
+
+    'user' => [
+        'main'        => ['title'       => 'Allgemeines'],
+        'email'       => ['title'       => 'E-Mail'],
+        'groups__ids' => ['title'       => 'Zugewiesene Benutzer-Gruppen'],
     ],
 
     'password-email' => [
-        'email'          => 'E-Mail'
+        'email'          => ['title'=>'E-Mail']
     ],
 
     'password-reset' => [
-        'password'          => 'Neues Passwort'
+        'password'          => ['title' => 'Neues Passwort']
     ],
 
     'password-reset-plugin' => [
@@ -25,6 +37,11 @@ return [
         'resetpage_title'               => 'Titel',
         'resetpage_content'             => 'Inhalt',
         'resetpage_description'         => 'Dies ist die Seite auf welche der Benutzer zum Ändern seines Passworts geleitet wird',
+    ],
+
+    'page' => [
+        'resetmail' => ['title' => 'E-Mail'],
+        'ctlsettings__resetmail_subject' => ['title' => '']
     ]
 
 ];

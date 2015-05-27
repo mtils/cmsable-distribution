@@ -12,13 +12,22 @@ class RoutesServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->registerUserController();
         $this->registerPasswordController();
     }
 
     public function register()
     {
-        
+
     }
+
+    protected function registerUserController()
+    {
+        $this->app->router->group($this->routeGroup, function($router){
+            $router->resource('users','UserController');
+        });
+    }
+
 
     protected function registerPasswordController()
     {

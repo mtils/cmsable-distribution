@@ -1,8 +1,10 @@
 @extends('index')
-@section('body')
+
+@section('content')
+
 @include('partials.breadcrumb-in-subpath')
 <div class="col-lg-12 col-md-12">
-{{ $form }}
+{!! $form !!}
 </div>
 @stop
 @section('bottomjs')

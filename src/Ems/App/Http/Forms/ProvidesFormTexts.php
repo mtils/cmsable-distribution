@@ -56,8 +56,6 @@ trait ProvidesFormTexts
             $formName = substr($formName, 0, strlen($formName)-5);
         }
 
-        $pos = strrpos($formName, '-form');
-
         $this->_translationKey = $this->baseTransKey('form') . '.' . $formName;
 
         return $this->_translationKey;

@@ -6,8 +6,6 @@ use FormObject\Field\TextField;
 class PasswordEmailForm extends Form
 {
 
-    use ProvidesFormTexts;
-
     public $validationRules = [
         'email'     => 'email|required'
     ];
@@ -18,16 +16,10 @@ class PasswordEmailForm extends Form
         $fields = parent::createFields();
 
         $fields->push(
-            TextField::create('email', $this->fieldTitle('email'))
+            TextField::create('email')
         );
 
         return $fields;
     }
 
-    public function createActions()
-    {
-        $actions = parent::createActions();
-        $actions->get('action_submit')->setTitle($this->actionTitle('send'));
-        return $actions;
-    }
 }

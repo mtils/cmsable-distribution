@@ -1,5 +1,6 @@
 <?php namespace Ems\App\Http\Controllers;
 
+use DateTime;
 use URL;
 use Notification;
 use Permit\Authentication\CredentialsBrokerInterface as CredentialsBroker;
@@ -7,6 +8,7 @@ use FormObject\Validator\ValidationException;
 use Permit\User\UserNotFoundException;
 use Cmsable\Mail\MailerInterface as Mailer;
 use Permit\Token\TokenExpiredException;
+use Permit\Token\TokenCollisionException;
 use Permit\Token\TokenException;
 use Permit\Authentication\AuthenticatorInterface as Auth;
 use Ems\App\Http\Forms\PasswordEmailForm;
@@ -61,7 +63,7 @@ class PasswordController extends Controller
      */
     public function createEmail(PasswordEmailForm $form)
     {
-        return view('passwords.email')->withForm($form);
+        return view($this->createEmailView)->withForm($form);
     }
 
     /**
@@ -98,10 +100,21 @@ class PasswordController extends Controller
 
         } catch (UserNotFoundException $e) {
 
-            Notification::error($this->routeMessage('user-not-found'));
+            $message = $this->routeMessage('user-not-found');
 
-            return redirect()->route('password.create-email');
+        } catch (TokenCollisionException $e) {
+
+            if ($e->validUntil instanceof DateTime) {
+                $params = ['valid_until' => $this->formatDateTime($e->validUntil)];
+                $message = $this->routeMessage('token-collision-until', $params);
+            } else {
+                $message = $this->routeMessage('token-collision-forever');
+            }
         }
+
+        Notification::error($message);
+        return redirect()->route('password.create-email');
+
 
     }
 
@@ -113,7 +126,7 @@ class PasswordController extends Controller
     public function createReset(PasswordResetForm $form, $token)
     {
         $form->fillByArray(['token'=>$token]);
-        return view('passwords.email')->withForm($form);
+        return view($this->createResetView)->withForm($form);
     }
 
     /**
@@ -135,16 +148,18 @@ class PasswordController extends Controller
         } catch (ValidationException $e) {
             return redirect()->route('password.create-reset',[$token])->withErrors($e)->withInput();
         } catch (UserNotFoundException $e) {
-            Notification::error($this->routeMessage('user-not-found'));
+            $message = $this->routeMessage('user-not-found');
             return redirect()->route('password.create-email');
         } catch (TokenExpiredException $e) {
             $params = ['expired_at' => $this->formatDateTime($e->expiryDate)];
-            Notification::error($this->routeMessage('token-expired', $params));
-            return redirect()->route('password.create-email');
+            $message = $this->routeMessage('token-expired', $params);
         } catch (TokenException $e) {
-            Notification::error('Der übergebene Zurücksetzungs-Schlüssel ist ungültig');
-            return redirect()->route('password.create-email');
+            $message = $this->routeMessage('token-invalid');
         }
+
+        Notification::error($message);
+        return redirect()->route('password.create-email');
+
     }
 
 }

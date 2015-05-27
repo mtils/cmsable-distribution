@@ -2,7 +2,6 @@
 
 use Cmsable\Model\SiteTreeNodeInterface;
 use Cmsable\Controller\SiteTree\Plugin\ConfigurablePlugin;
-use Ems\App\Http\Forms\ProvidesFormTexts;
 use FormObject\FieldList;
 use FormObject\Field\TextField;
 use FormObject\Field\Action;
@@ -11,22 +10,23 @@ use FormObject\Field\BooleanRadioField;
 use FormObject\Field\SelectOneField;
 use FormObject\Validator\ValidatorInterface;
 use FormObject\Field\SelectManyField;
+use FormObject\Factory;
 
 class PasswordResetPlugin extends ConfigurablePlugin
 {
 
-    use ProvidesFormTexts;
-
     public function modifyFormFields(FieldList $fields, SiteTreeNodeInterface $page)
     {
 
-        $emailFields = FieldList::create('resetmail', $this->fieldTitle('resetmail'));
+        $factory = new Factory;
+
+        $emailFields = $this->fieldList('resetmail');
 
         $fields->push($emailFields)->before('settings');
 
         $this->addEmailFields($emailFields);
 
-        $resetPageFields = FieldList::create('resetpage', $this->fieldTitle('resetpage'));
+        $resetPageFields = $this->fieldList('resetpage');
 
         $fields->push($resetPageFields)->before('settings');
 
@@ -37,29 +37,21 @@ class PasswordResetPlugin extends ConfigurablePlugin
     protected function addEmailFields(FieldList $emailFields)
     {
         $emailFields->push(
-            TextField::create($this->fieldName('resetmail_subject'), $this->fieldTitle('resetmail_subject'))
+            $this->textField($this->fieldName('resetmail_subject'))
         );
 
         $emailFields->push(
-            TextField::create($this->fieldName('resetmail_body'), $this->fieldTitle('resetmail_body'))
-                       ->setMultiLine(true)
-                       ->addCssClass('html')
-                       ->setDescription($this->fieldTitle('resetmail_body_description'))
+            $this->htmlField($this->fieldName('resetmail_body'))
         );
     }
 
     protected function addResetPageFields(FieldList $emailFields)
     {
         $emailFields->push(
-            TextField::create($this->fieldName('resetpage_title'), $this->fieldTitle('resetpage_title'))
+            $this->textField($this->fieldName('resetpage_title'))
         );
 
-        $emailFields->push(
-            TextField::create($this->fieldName('resetpage_content'), $this->fieldTitle('resetpage_content'))
-                       ->setMultiLine(true)
-                       ->addCssClass('html')
-                       ->setDescription($this->fieldTitle('resetpage_description'))
-        );
+        $emailFields->push($this->htmlField($this->fieldName('resetpage_content')));
     }
 
 }

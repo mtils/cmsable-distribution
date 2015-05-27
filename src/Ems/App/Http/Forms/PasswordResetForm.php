@@ -1,15 +1,16 @@
 <?php namespace Ems\App\Http\Forms;
 
 use FormObject\Form;
+use FormObject\FieldList;
+use FormObject\Field\Action;
 use FormObject\Field\TextField;
 use FormObject\Field\PasswordField;
 use FormObject\Field\HiddenField;
 use FormObject\Field\LiteralField;
 
+
 class PasswordResetForm extends Form
 {
-
-    use ProvidesFormTexts;
 
     public $validationRules = [
         'password'     => 'required|confirmed'
@@ -21,8 +22,8 @@ class PasswordResetForm extends Form
         $fields = parent::createFields();
 
         $fields->push(
-            PasswordField::create('password', $this->fieldTitle('password')),
-            PasswordField::create('password_confirmation', $this->confirmedName('password')),
+            PasswordField::create('password'),
+            PasswordField::create('password_confirmation'),
             HiddenField::create('token')
         );
 
@@ -31,8 +32,9 @@ class PasswordResetForm extends Form
 
     public function createActions()
     {
-        $actions = parent::createActions();
-        $actions->get('action_submit')->setTitle($this->actionTitle('change'));
+        $actions = new FieldList;
+        $actions->setForm($this);
+        $actions->push(Action::create('change'));
         return $actions;
     }
 }
