@@ -13,6 +13,8 @@
     <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
     <!-- Datepicker -->
     <link href="/cmsable/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="/cmsable/js/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="/cmsable/AdminLTE/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins 
@@ -76,6 +78,7 @@
     <script src="/cmsable/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
 <!-- SlimScroll -->
     <script src="/cmsable/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="/cmsable/js/select2/js/select2.full.min.js" type="text/javascript"></script>
     <!-- FastClick -->
     <script src='/cmsable/plugins/fastclick/fastclick.min.js'></script>
     <!-- AdminLTE App -->
