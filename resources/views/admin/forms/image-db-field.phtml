@@ -1,0 +1,22 @@
+    <? if($item->className == 'HiddenField'): ?>
+       <input <?=$item->attributes ?> />
+    <? else: ?>
+    <div class="form-group<? if(!$item->isValid()) echo ' has-error'; ?>">
+    <? $item->addCssClass('form-control') ?>
+        <? if(!$item->hasCssClass('no-label')): ?>
+            <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?></label>
+        <? endif ?>
+        <br/>
+        <div class="image-field-placeholder" style="cursor: pointer;"><img style="max-height: 100px;" src="<? if($item->value): ?><?= App::make('filedb.model')->getById($item->value)->url ?><? else: ?>/cmsable/img/no-img.png<? endif; ?>"/><br/>
+            <input <?= $item->attributes ?>/>
+        </div>
+        <? if($item->description): ?>
+        <span class="help-block"><?= $item->description ?></span>
+        <? endif ?>
+        <? if(!$item->isValid()): ?>
+        <? foreach($item->messages as $error): ?>
+        <span class="help-inline"><?= $error ?></span>
+        <? endforeach ?>
+        <? endif ?>
+    </div>
+    <? endif ?>

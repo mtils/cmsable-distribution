@@ -2,6 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use FormObject\Form;
+use Cmsable\Controller\SiteTree\SiteTreeController;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,8 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerAdminViewPath();
 
         $this->registerFormTranslations();
+
+        $this->registerFileDBExtension();
     }
 
     public function register()
@@ -28,6 +31,7 @@ class PackageServiceProvider extends ServiceProvider
 
     protected function registerAdminViewPath()
     {
+
         $this->app['cmsable.cms']->whenScope('admin', function ()
         {
 
@@ -41,6 +45,11 @@ class PackageServiceProvider extends ServiceProvider
             $this->app['view']->getFinder()->prependLocation($adminThemePath);
 
         });
+
+        $this->app->afterResolving('FormObject\Factory', function($factory, $app){
+            $factory->appendNamespace('Ems\App\Http\Forms\Fields');
+        });
+
     }
 
     protected function registerFormTranslations()
@@ -76,6 +85,60 @@ class PackageServiceProvider extends ServiceProvider
             return $this->packagePath . "/$dir";
         }
         return $this->packagePath;
+    }
+
+    protected function registerFileDBExtension()
+    {
+
+//         $class = 'Cmsable\Controller\SiteTree\SiteTreeController';
+// 
+//         $this->app->afterResolving($class, function($controller, $app){
+//             $controller->extend('jsConfig', function(&$jsConfig){
+//                 $this->addCKEditorRoute($jsConfig);
+//             });
+//         });
+
+
+        $class = 'FileDB\Controller\FileController';
+
+        $this->app->afterResolving($class, function($controller, $app) {
+            $controller->provideOpenLinkAttributes('ckeditor', function($file){
+
+                return [
+                    'href'    => $file->url,
+                    'onclick' => "window.opener.CKEDITOR.tools.callFunction(1, $(this).attr('href')); window.close(); return false;",
+                ];
+
+            });
+        });
+
+        $this->app->afterResolving($class, function($controller, $app) {
+            $controller->provideOpenLinkAttributes('image-field', function($file){
+
+                return [
+                    'href'    => $file->url,
+                    'onclick' => "window.opener.assignToLastClickedImageField($file->id, $(this).attr('href')); window.close(); return false;",
+                ];
+
+            });
+        });
+
+        $this->app->afterResolving($class, function($controller, $app) {
+            $controller->provideOpenLinkAttributes('upload-field', function($file){
+
+                return [
+                    'href'    => $file->url,
+                    'onclick' => "window.opener.assignToLastClickedUploadField({$file->id}, '{$file->name}'); window.close(); return false;",
+                ];
+
+            });
+        });
+
+    }
+
+    protected function addCKEditorRoute(&$jsConfig)
+    {
+        $jsConfig['window.fileroute'] = $this->app['url']->route('files.index');
     }
 
 }

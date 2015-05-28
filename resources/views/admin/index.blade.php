@@ -15,6 +15,7 @@
     <link href="/cmsable/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 
     <link href="/cmsable/js/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/cmsable/css/filemanager.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="/cmsable/AdminLTE/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins 
@@ -71,6 +72,7 @@
     </div><!-- ./wrapper -->
     @section('js')
     <!-- jQuery 2.1.3 -->
+    <script src="{{ URL::route('files.js-config') }}"></script>
     <script src="/cmsable/plugins/jQuery/jQuery-2.1.3.min.js"></script>
     <!-- Bootstrap 3.3.2 JS -->
     <script src="/cmsable/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>

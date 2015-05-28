@@ -1,0 +1,31 @@
+    <? if($item->className == 'HiddenField'): ?>
+       <input <?=$item->attributes ?> />
+    <? else: ?>
+    <div class="form-group<? if(!$item->isValid()) echo ' has-error'; ?>">
+    <? $item->addCssClass('form-control') ?>
+        <? if(!$item->hasCssClass('no-label')): ?>
+            <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?></label>
+        <? endif ?>
+
+        <div class="row upload-field">
+            <div class="col-lg-6">
+                <div class="input-group">
+                <input type="text" class="filename form-control" value="<? if($item->value): echo App::make('filedb.model')->getById($item->value)->name; endif ?>" placeholder="Datei auswählen..." readonly>
+                <input <?= $item->attributes ?> class="target"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-default choose" type="button">Auswählen</button>
+                </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+
+        <? if($item->description): ?>
+        <span class="help-block"><?= $item->description ?></span>
+        <? endif ?>
+        <? if(!$item->isValid()): ?>
+        <? foreach($item->messages as $error): ?>
+        <span class="help-inline"><?= $error ?></span>
+        <? endforeach ?>
+        <? endif ?>
+    </div>
+    <? endif ?>
