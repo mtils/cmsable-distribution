@@ -3,6 +3,8 @@
 use Illuminate\Support\ServiceProvider;
 use FormObject\Form;
 use Cmsable\Controller\SiteTree\SiteTreeController;
+use Illuminate\Routing\Router;
+use Ems\App\Http\Route\TreeResourceRegistrar;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -13,6 +15,12 @@ class PackageServiceProvider extends ServiceProvider
 
     public function boot()
     {
+
+        Router::macro('treeResource', function($name, $controller, $options=[]) {
+            $registrar = new TreeResourceRegistrar($this);
+            $registrar->register($name, $controller, $options);
+        });
+
         $this->loadTranslationsFrom(
             $this->resourcePath('lang'),
             $this->packageNS
