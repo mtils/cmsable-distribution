@@ -10,21 +10,26 @@ use Cmsable\Http\Resource\EditRequest;
 use Cmsable\Http\Resource\SaveRequest;
 use Cmsable\Http\Resource\DeleteRequest;
 use Ems\App\Http\Forms\UserForm;
+use Cmsable\Resource\Contracts\Mapper;
 
 class UserController extends Controller
 {
 
     protected $repository;
 
-    public function __construct(UserRepository $repository)
+    protected $mapper;
+
+    public function __construct(UserRepository $repository, Mapper $mapper)
     {
         $this->repository = $repository;
+        $this->mapper = $mapper;
+        $this->mapper->mapFormClass('users', 'Ems\App\Http\Forms\UserForm');
         $this->middleware('auth');
     }
 
-    public function show(ShowRequest $request, $id)
+    public function show($id)
     {
-        return $this->repository->findOrFail($id);
+        return $this->repository->find($id);
     }
 
     public function index()
@@ -32,11 +37,12 @@ class UserController extends Controller
         return $this->repository->getModel()->all();
     }
 
-    public function edit(EditRequest $request, UserForm $form,  $id)
+    public function edit($id)
     {
-        $user = $request->findModel($id);
-        $form->fillByArray($user->toArray());
-        $form->fillByArray(['ids'=>$user->groups()->getRelatedIds()], 'groups');
+        $user = $this->repository->find($id);
+//         $form->fillByArray($user->toArray());
+//         $form->fillByArray(['ids'=>$user->groups()->getRelatedIds()], 'groups');
+        return view('users.edit')->withModel($user);
         return view('users.edit')->withForm($form)->withResource($user);
     }
 

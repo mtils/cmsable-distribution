@@ -19,6 +19,12 @@ class UserForm extends Form
         $this->groups = $groups;
     }
 
+    public function setModel($model)
+    {
+        $this->fillByArray($model->toArray());
+        return parent::setModel($model);
+    }
+
     public function createFields()
     {
 
