@@ -35,6 +35,22 @@ class PackageServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->registerValidatorNamespace();
+        $this->registerFormNamespace();
+    }
+
+    protected function registerValidatorNamespace()
+    {
+        $this->app->afterResolving('Cmsable\Resource\ValidatorClassFinder', function($finder){
+            $finder->appendNamespace('Ems\App\Validators');
+        });
+    }
+
+    protected function registerFormNamespace()
+    {
+        $this->app->afterResolving('Cmsable\Resource\FormClassFinder', function($finder){
+            $finder->appendNamespace('Ems\App\Http\Forms');
+        });
     }
 
     protected function registerAdminViewPath()

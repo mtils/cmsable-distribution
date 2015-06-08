@@ -2,13 +2,8 @@
 
 use App\Http\Controllers\Controller;
 use Ems\App\Repositories\UserRepository;
-use Ems\App\Http\Requests\UserRequest;
+use Cmsable\Http\Resource\CleanedRequest;
 
-use Cmsable\Http\Resource\ShowRequest;
-use Cmsable\Http\Resource\CreateRequest;
-use Cmsable\Http\Resource\EditRequest;
-use Cmsable\Http\Resource\SaveRequest;
-use Cmsable\Http\Resource\DeleteRequest;
 use Ems\App\Http\Forms\UserForm;
 use Cmsable\Resource\Contracts\Mapper;
 
@@ -23,7 +18,6 @@ class UserController extends Controller
     {
         $this->repository = $repository;
         $this->mapper = $mapper;
-        $this->mapper->mapFormClass('users', 'Ems\App\Http\Forms\UserForm');
         $this->middleware('auth');
     }
 
@@ -40,16 +34,13 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = $this->repository->find($id);
-//         $form->fillByArray($user->toArray());
-//         $form->fillByArray(['ids'=>$user->groups()->getRelatedIds()], 'groups');
         return view('users.edit')->withModel($user);
-        return view('users.edit')->withForm($form)->withResource($user);
     }
 
-    public function update(UserRequest $request, $id)
+    public function update(CleanedRequest $request, $id)
     {
-        $user = $request->findModel($id);
-        $this->repository->update($user, $request->casted());
+        $user = $this->repository->find($id);
+        $this->repository->update($user, $request->cleaned());
         return redirect()->route('users.edit',[$id]);
     }
 

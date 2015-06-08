@@ -11,10 +11,9 @@ use Permit\Token\TokenExpiredException;
 use Permit\Token\TokenCollisionException;
 use Permit\Token\TokenException;
 use Permit\Authentication\AuthenticatorInterface as Auth;
-use Ems\App\Http\Forms\PasswordEmailForm;
-use Ems\App\Http\Forms\PasswordResetForm;
 use App\Http\Controllers\Controller;
 use Ems\App\Helpers\ProvidesTexts;
+use Cmsable\Http\Resource\CleanedRequest;
 
 
 class PasswordController extends Controller
@@ -26,7 +25,7 @@ class PasswordController extends Controller
 
     public $sentEmailView = 'passwords.email';
 
-    public $createResetView = 'passwords.email';
+    public $createResetView = 'passwords.create-reset';
 
     /**
      * @var \Permit\Authentication\CredentialsBrokerInterface
@@ -61,9 +60,9 @@ class PasswordController extends Controller
      *
      * @return Response
      */
-    public function createEmail(PasswordEmailForm $form)
+    public function createEmail()
     {
-        return view($this->createEmailView)->withForm($form);
+        return view($this->createEmailView);
     }
 
     /**
@@ -71,12 +70,12 @@ class PasswordController extends Controller
      *
      * @return Response
      */
-    public function sendEmail(PasswordEmailForm $form)
+    public function sendEmail(CleanedRequest $request)
     {
 
         try {
 
-            $this->broker->reserveReset($form->getData(), function($user, $token) {
+            $this->broker->reserveReset($request->cleaned(), function($user, $token) {
 
                 $data = [
                     'subject' => $this->routeMailText('subject'),
@@ -93,10 +92,6 @@ class PasswordController extends Controller
             Notification::success($this->routeMessage('reset-sent'));
 
             return redirect()->route('password.create-email');
-
-        } catch (ValidationException $e) {
-
-            return redirect()->route('password.create-email')->withErrors($e)->withInput();
 
         } catch (UserNotFoundException $e) {
 
@@ -123,10 +118,9 @@ class PasswordController extends Controller
      *
      * @return Response
      */
-    public function createReset(PasswordResetForm $form, $token)
+    public function createReset($token)
     {
-        $form->fillByArray(['token'=>$token]);
-        return view($this->createResetView)->withForm($form);
+        return view($this->createResetView)->withToken($token);
     }
 
     /**
@@ -135,18 +129,16 @@ class PasswordController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function storeReset(PasswordResetForm $form, $token)
+    public function storeReset(CleanedRequest $request, $token)
     {
         try {
 
-            $this->auth->loginUser($this->broker->reset($form->getData()), false);
+            $this->auth->loginUser($this->broker->reset($request->withConfirmations()->cleaned()), false);
 
             Notification::success($this->routeMessage('password-changed'));
 
             return redirect()->to('fachpartner.personal-area-page');
 
-        } catch (ValidationException $e) {
-            return redirect()->route('password.create-reset',[$token])->withErrors($e)->withInput();
         } catch (UserNotFoundException $e) {
             $message = $this->routeMessage('user-not-found');
             return redirect()->route('password.create-email');

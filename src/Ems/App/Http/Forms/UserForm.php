@@ -22,6 +22,7 @@ class UserForm extends Form
     public function setModel($model)
     {
         $this->fillByArray($model->toArray());
+        $this->fillByArray(['ids'=>$model->groups()->getRelatedIds()], 'groups');
         return parent::setModel($model);
     }
 
@@ -36,7 +37,7 @@ class UserForm extends Form
                                 ->setSwitchable(true);
 
         $mainFields->push(
-            TextField::create('email')
+            Form::text('email')
         );
 
         /*--------------------------------------------------------------------------
@@ -47,9 +48,8 @@ class UserForm extends Form
 
         $fields->push($mainFields);
 
-
-
         return $fields;
+
     }
 
     public function createActions()

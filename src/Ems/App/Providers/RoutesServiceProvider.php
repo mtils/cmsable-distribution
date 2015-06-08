@@ -78,6 +78,17 @@ class RoutesServiceProvider extends ServiceProvider
 
         });
 
+        $this->app->afterResolving('cmsable.resource-detector', function($mapper) {
+            $mapper->mapToRoute('password.create-email', 'password-emails');
+            $mapper->mapToRoute('password.send-email', 'password-emails');
+            $mapper->mapToRoute('password.create-reset', 'password-resets');
+            $mapper->mapToRoute('password.store-reset', 'password-resets');
+        });
+
+//         $this->app->afterResolving('cmsable.resource-mapper', function($mapper) {
+//             $mapper->mapFormClass('password-emails','Ems\App\Http\Forms\PasswordEmailForm');
+//         });
+
     }
 
 }
