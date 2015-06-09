@@ -3,12 +3,12 @@
     "description": "This repository contains the actual cms files of cmsable",
     "type": "library",
     "require": {
-        "ems/cmsable": "dev-master",
+        "ems/cmsable": "0.2.*",
         "ems/collection": "0.1.*",
         "ems/signal": "0.1.*",
         "ems/xtype": "0.1.*",
         "ems/formobject": "0.2.*",
-        "ems/versatile": "dev-master",
+        "ems/versatile": "0.1.*",
         "ems/file-db": "0.2.*"
     },
     "require-dev": {
