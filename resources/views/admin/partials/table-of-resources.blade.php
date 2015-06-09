@@ -15,7 +15,7 @@
             <td>
             <? $actions = $filterActions ? Actions::forItem($row)->filtered($filterActions) : Actions::forItem($row) ?>
             @foreach($actions as $action)
-            <a href="{{ $action->url }}" onclick="{{ $action->onClick }}" class="btn btn-default btn-sm {{ $action->contexts }}" title="{{ $action->title }}"><i class="fa {{ $action->icon }}"></i></a>
+            <a href="{{ $action->url }}" {!! $action->data !!} onclick="{{ $action->onClick }}" class="btn btn-default btn-sm {{ $action->contexts }}" title="{{ $action->title }}"><i class="fa {{ $action->icon }}"></i></a>
             @endforeach
         </tr>
     @endforeach

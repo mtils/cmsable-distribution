@@ -49,6 +49,21 @@
                 <? endif ?>
                 <button type="submit" name="<?= $action->action ?>" value="<?= $action->value ?>" class="<?= $action->cssClasses ?>"><?= $action->title ?></button>
             <? endforeach ?>
+            <? foreach (Actions::forItem($item->getModel())->filtered('save') as $action): ?>
+                <? $actionClasses = $action->contexts->copy()->append('btn') ?>
+                <? if ($action->contexts->contains('danger')): ?>
+                <? $actionClasses->append('btn-danger') ?>
+                <? elseif ($action->contexts->contains('warning')): ?>
+                <? $actionClasses->append('btn-warning') ?>
+                <? elseif ($action->contexts->contains('info')): ?>
+                <? $actionClasses->append('btn-info') ?>
+                <? elseif ($action->contexts->contains('primary')): ?>
+                <? $actionClasses->append('btn-primary') ?>
+                <? elseif ($action->contexts->contains('success')): ?>
+                <? $actionClasses->append('btn-success') ?>
+                <? endif ?>
+                <button type="button" <?= $action->data ?> name="<?= $action->name ?>" onclick="<?= $action->onClick ?>" class="<?= $actionClasses ?>"><?= $action->title ?></button>
+            <? endforeach ?>
         </div> <!-- /.box-footer -->
     </div> <!-- /.nav-tabs-custom | /.box -->
 
