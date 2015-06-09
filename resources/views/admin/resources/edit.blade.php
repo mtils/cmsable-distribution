@@ -7,7 +7,7 @@
 @form()
 </div>
 @stop
-@section('bottomjs')
+@section('js')
     @parent
     <script src="/cmsable/js/jstree/dist/jstree.min.js"></script>
     <script src="/cmsable/js/ckeditor/ckeditor.js"></script>

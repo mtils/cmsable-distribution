@@ -6,6 +6,7 @@ return [
     'thousands-separator' => '.',
     'date-format'         => 'd.m.Y',
     'time-format'         => 'H:i',
-    'datetime-format'     => 'd.m.Y H:i'
+    'datetime-format'     => 'd.m.Y H:i',
+    'create-object'       => ':class anlegen'
 
 ];

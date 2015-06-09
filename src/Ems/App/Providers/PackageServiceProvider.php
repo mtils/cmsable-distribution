@@ -31,6 +31,9 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerFormTranslations();
 
         $this->registerFileDBExtension();
+
+        $this->registerMultiRenderer();
+
     }
 
     public function register()
@@ -158,6 +161,13 @@ class PackageServiceProvider extends ServiceProvider
             });
         });
 
+    }
+
+    protected function registerMultiRenderer()
+    {
+        $this->app->singleton('cmsable-dist.multi-renderer', function($app){
+            return $app->make('Ems\App\View\MultiRenderer');
+        });
     }
 
     protected function addCKEditorRoute(&$jsConfig)

@@ -3,24 +3,30 @@
     @parent
     <link href="/cmsable/css/sitetree.css" rel="stylesheet" type="text/css" />
 @stop
-@section('body')
-@if(isset($title) && $title)
-    <h2 class="page-header text-right">{{ $title }}</h2>
+@section('content')
+    @if(isset($title) && $title)
+        <h2 class="page-header text-right">{{ $title }}</h2>
     @endif
-        <div class="col-lg-12 col-md-12">
-            @if(isset($allowCreate) && $allowCreate)
-            <div class="btn btn-success btn-file" style="width: 150px;" onclick="window.location='{{ URL::action('create') }}'">
-                <i class="fa fa-edit"></i>
-                Neue {{ Lang::choice($modelLangKey,1) }}
-            </div>
-            <br/><br/>
-            @endif
-            <div id="tree-container" data-edit-url="{{ URL::to(Menu::current()) }}">
-                @toJsTree($model, 'name', $model->id)
-            </div>
+    <? $layoutRatio = isset($layoutRatio) ? $layoutRatio : '3:9' ?>
+    <? list($leftCols, $rightCols) = explode(':',$layoutRatio) ?>
+    <div class="col-lg-{{ $leftCols }}">
+        @if(Auth::allowed($model, 'alter'))
+        <div class="btn btn-success btn-file new-node" style="width: 160px;">
+            <i class="fa fa-edit"></i>
+            {{ Lang::get('ems::base.create-object', ['class'=>Render::classTitle($model)]) }}
         </div>
+        <br/><br/>
+        @endif
+        <? $iconClass = isset($iconClass) ? $iconClass : 'normal' ?>
+        <div id="tree-container" data-edit-url="{{ URL::route(Resource::getCurrentResource().'.index') }}">
+            <ul>{!! Render::tree($model)->iconClass($iconClass) !!}</ul>
+        </div>
+    </div>
+    <div class="col-lg-{{ $rightCols }} left-splitted">
+        @form()
+    </div>
 @stop
-@section('bottomjs')
+@section('js')
     @parent
     <script src="/cmsable/js/jstree/dist/jstree.min.js"></script>
     <script src="/cmsable/js/ckeditor/ckeditor.js"></script>

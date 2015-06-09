@@ -8,6 +8,8 @@ class JsTreePropertyRenderer
 
     protected $titleKey = 'name';
 
+    protected $iconClass = '';
+
     protected $currentId;
 
     public function __construct($titleProperty='name', $currentId=null)
@@ -22,7 +24,13 @@ class JsTreePropertyRenderer
         return $this;
     }
 
-    public function render(Node $node)
+    public function iconClass($iconClass)
+    {
+        $this->iconClass = $iconClass;
+        return $this;
+    }
+
+    public function render(Node $node, Node $passedNode)
     {
 
         $liClasses = ['jstree-open'];
@@ -31,9 +39,13 @@ class JsTreePropertyRenderer
             $liClasses[] = 'root-node';
         }
 
+        if ($this->iconClass) {
+            $liClasses[] = $this->iconClass;
+        }
+
         $spanClasses = [];
 
-        if ($this->currentId == $node->getId()){
+        if ($passedNode->getId() == $node->getId()){
             $spanClasses[] = 'active';
         }
 
