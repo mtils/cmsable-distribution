@@ -1,8 +1,19 @@
 @extends('index')
 @section('head')
     @parent
-    {{ HTML::style('themes/admin/css/filemanager.css') }}
+    <style>
+        @include('file-db::partials.style')
+        div.filemanager {
+            background-color: #fff;
+        }
+    </style>
 @stop
-@section('body')
-    @include('partials.filemanager')
+@section('content')
+    @include('file-db::partials.filemanager')
+@stop
+@section('js')
+    @parent
+    <script>
+        @include('file-db::partials.javascript')
+    </script>
 @stop

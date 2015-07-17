@@ -18,7 +18,7 @@ class RoutesServiceProvider extends ServiceProvider
 
     public function register()
     {
-
+        $this->registerFileDBPageType();
     }
 
     protected function registerUserController()
@@ -88,6 +88,53 @@ class RoutesServiceProvider extends ServiceProvider
 //         $this->app->afterResolving('cmsable.resource-mapper', function($mapper) {
 //             $mapper->mapFormClass('password-emails','Ems\App\Http\Forms\PasswordEmailForm');
 //         });
+
+    }
+
+    public function registerFileDBPageType()
+    {
+        $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes){
+
+            $pageType = PageType::create('cmsable.files')
+                                  ->setCategory('default')
+//                                   ->setFormPluginClass('Ems\App\Cms\Plugins\PasswordResetPlugin')
+                                  ->setTargetPath('files')
+                                  ->setControllerCreatorClass('Ems\App\Cms\ControllerCreators\FileControllerCreator');
+//                                   ->setRouteNames(['password.create-reset']);
+
+            $pageTypes->add($pageType);
+
+//             $configTypeRepo = $this->app->make('Cmsable\PageType\ConfigTypeRepositoryInterface');
+
+//             $configTypeRepo->setTemplate('cmsable.password-reset',[
+//                 'resetmail_subject' => '',
+//                 'resetmail_body'    => '',
+//                 'resetpage_title'   => '',
+//                 'resetpage_content' => ''
+//             ]);
+
+
+        });
+
+        $this->app['events']->listen('sitetree.filled', function(&$adminTreeArray){
+            $adminTreeArray['children'][] = [
+                'id'                => 'files',
+                'page_type'         => 'cmsable.files',
+                'url_segment'       => 'manage-files',
+                'icon'              => 'fa-folder-o',
+                'title'             => $this->app['translator']->get('ems::admintree.files.title'),
+                'menu_title'        => $this->app['translator']->get('ems::admintree.files.menu_title'),
+                'show_in_menu'      => true,
+                'show_in_aside_menu'=> false,
+                'show_in_search'    => true,
+                'show_when_authorized' => true,
+                'redirect_type'     => 'none',
+                'redirect_target'   => '',
+                'content'           => $this->app['translator']->get('ems::admintree.files.content'),
+                'view_permission'   => 'cms.access',
+                'edit_permission'   => 'superuser'
+            ];
+        }, -1);
 
     }
 
