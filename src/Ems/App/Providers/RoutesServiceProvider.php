@@ -2,6 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use Cmsable\PageType\PageType;
+use Cmsable\Cms\Action\Action;
 
 class RoutesServiceProvider extends ServiceProvider
 {
@@ -23,9 +24,47 @@ class RoutesServiceProvider extends ServiceProvider
 
     protected function registerUserController()
     {
+
         $this->app->router->group($this->routeGroup, function($router){
             $router->resource('users','UserController');
         });
+
+        $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('users.edit', [$resource->getAuthIdentifier()]);
+            $editUser = new Action();
+            $editUser->setName('users-edit')->setTitle('Edit user');
+            $editUser->setUrl($url);
+            $editUser->setIcon('fa-edit');
+            $editUser->showIn('users');
+            $group->push($editUser);
+
+        });
+
+        $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('users.destroy', [$resource->getAuthIdentifier()]);
+            $deleteUser = new Action();
+            $deleteUser->setName('users-destroy')->setTitle('Delete user');
+            $deleteUser->setIcon('fa-trash');
+            $deleteUser->showIn('users');
+
+            $deleteUser->setOnClick("deleteResource('$url', this); return false;");
+            $deleteUser->showIn('users','save','delete-request','danger');
+            $deleteUser->setData('confirm-message', 'Really delete this user?');
+
+            $group->push($deleteUser);
+
+        });
+
     }
 
 

@@ -6,6 +6,8 @@ use Cmsable\Http\Resource\CleanedRequest;
 
 use Ems\App\Http\Forms\UserForm;
 use Cmsable\Resource\Contracts\Mapper;
+use Versatile\Query\Builder;
+use App\User;
 
 class UserController extends Controller
 {
@@ -13,6 +15,10 @@ class UserController extends Controller
     protected $repository;
 
     protected $mapper;
+
+    protected $searchColumns = [
+        'id', 'email', 'last_login'
+    ];
 
     public function __construct(UserRepository $repository, Mapper $mapper)
     {
@@ -28,7 +34,10 @@ class UserController extends Controller
 
     public function index()
     {
-        return $this->repository->getModel()->all();
+        $search = new Builder(new User());
+        $search->withColumn($this->searchColumns);
+
+        return view('users.index')->withSearch($search);
     }
 
     public function edit($id)
