@@ -11,13 +11,25 @@ return [
         'change'            => ['title'=>'Ändern'],
         'save'              => ['title'=>'Speichern'],
         'create'            => ['title'=>'Anlegen'],
-        'submit'            => ['title'=>'Absenden']
+        'submit'            => ['title'=>'Absenden'],
+        'search'            => ['title'=>'Suchen']
     ],
 
     'user' => [
         'main'        => ['title'       => 'Allgemeines'],
         'email'       => ['title'       => 'E-Mail'],
         'groups__ids' => ['title'       => 'Zugewiesene Benutzer-Gruppen'],
+    ],
+
+    'user-search' => [
+        'main'        => ['title'       => 'Allgemeines'],
+        'email'       => ['title'       => 'E-Mail'],
+        'groups__ids' => ['title'       => 'Benutzer-Gruppen'],
+    ],
+
+    'group' => [
+        'main'        => ['title'       => 'Allgemeines'],
+        'name'       => ['title'        => 'Name']
     ],
 
     'password-email' => [

@@ -34,6 +34,8 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerMultiRenderer();
 
+        $this->registerPermissionRepository();
+
     }
 
     public function register()
@@ -90,6 +92,16 @@ class PackageServiceProvider extends ServiceProvider
             }
 
         });
+    }
+
+    protected function registerPermissionRepository()
+    {
+        $this->app->alias('ems.permissions', 'Permit\Permission\RepositoryInterface');
+
+        $this->app->singleton('ems.permissions', function($app){
+            return $app->make('Permit\Support\Laravel\Permission\TranslatorRepository');
+        });
+
     }
 
     protected function resourcePath($dir='')

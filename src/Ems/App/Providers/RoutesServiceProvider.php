@@ -14,6 +14,7 @@ class RoutesServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerUserController();
+        $this->registerGroupController();
         $this->registerPasswordController();
     }
 
@@ -37,7 +38,9 @@ class RoutesServiceProvider extends ServiceProvider
 
             $url = $this->app['url']->route('users.edit', [$resource->getAuthIdentifier()]);
             $editUser = new Action();
-            $editUser->setName('users-edit')->setTitle('Edit user');
+            $editUser->setName('users-edit')->setTitle(
+                $this->app['translator']->get('ems::actions.users.edit')
+            );
             $editUser->setUrl($url);
             $editUser->setIcon('fa-edit');
             $editUser->showIn('users');
@@ -53,13 +56,17 @@ class RoutesServiceProvider extends ServiceProvider
 
             $url = $this->app['url']->route('users.destroy', [$resource->getAuthIdentifier()]);
             $deleteUser = new Action();
-            $deleteUser->setName('users-destroy')->setTitle('Delete user');
+            $deleteUser->setName('users-destroy')->setTitle(
+                $this->app['translator']->get('ems::actions.users.destroy')
+            );
             $deleteUser->setIcon('fa-trash');
             $deleteUser->showIn('users');
 
             $deleteUser->setOnClick("deleteResource('$url', this); return false;");
             $deleteUser->showIn('users','save','delete-request','danger');
-            $deleteUser->setData('confirm-message', 'Really delete this user?');
+            $deleteUser->setData('confirm-message',
+                $this->app['translator']->get('ems::actions.users.destroy-confirm')
+            );
 
             $group->push($deleteUser);
 
@@ -67,6 +74,56 @@ class RoutesServiceProvider extends ServiceProvider
 
     }
 
+    protected function registerGroupController()
+    {
+
+        $this->app->router->group($this->routeGroup, function($router){
+            $router->resource('groups','GroupController');
+        });
+
+        $this->app['cmsable.actions']->onItem('App\Group', function($group, $user, $resource){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('groups.edit', [$resource->getGroupId()]);
+            $editGroup = new Action();
+            $editGroup->setName('groups-edit')->setTitle(
+                $this->app['translator']->get('ems::actions.groups.edit')
+            );
+            $editGroup->setUrl($url);
+            $editGroup->setIcon('fa-edit');
+            $editGroup->showIn('groups');
+            $group->push($editGroup);
+
+        });
+
+        $this->app['cmsable.actions']->onItem('App\Group', function($group, $user, $resource){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('groups.destroy', [$resource->getGroupId()]);
+            $deleteGroup = new Action();
+            $deleteGroup->setName('groups-destroy')->setTitle(
+                $this->app['translator']->get('ems::actions.groups.destroy')
+            );
+            $deleteGroup->setIcon('fa-trash');
+            $deleteGroup->showIn('groups');
+
+            $deleteGroup->setOnClick("deleteResource('$url', this); return false;");
+            $deleteGroup->showIn('groups','save','delete-request','danger');
+            $deleteGroup->setData('confirm-message',
+                $this->app['translator']->get('ems::actions.groups.destroy-confirm')
+            );
+
+            $group->push($deleteGroup);
+
+        });
+
+    }
 
     protected function registerPasswordController()
     {

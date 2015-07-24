@@ -2,14 +2,14 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Ems\App\Repositories\UserRepository;
+use Ems\App\Repositories\GroupRepository;
 use Cmsable\Http\Resource\CleanedRequest;
 
 use Cmsable\Resource\Contracts\Mapper;
 use Versatile\Query\Builder;
-use App\User;
+use App\Group;
 
-class UserController extends Controller
+class GroupController extends Controller
 {
 
     protected $repository;
@@ -17,10 +17,10 @@ class UserController extends Controller
     protected $mapper;
 
     protected $searchColumns = [
-        'id', 'email', 'last_login'
+        'id', 'name'
     ];
 
-    public function __construct(UserRepository $repository, Mapper $mapper)
+    public function __construct(GroupRepository $repository, Mapper $mapper)
     {
         $this->repository = $repository;
         $this->mapper = $mapper;
@@ -34,7 +34,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $search = new Builder(new User());
+        $search = new Builder(new Group());
 
         $orderBy = $request->get('sort') ?: 'created_at';
         $desc = $request->get('order') ?: 'desc';
