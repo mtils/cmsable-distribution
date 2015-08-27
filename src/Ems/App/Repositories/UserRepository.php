@@ -31,11 +31,6 @@ class UserRepository extends EloquentRepository
         return static::$resourceName;
     }
 
-    public function newForm(array $attributes=[])
-    {
-        return App::make(static::$formClass);
-    }
-
     public function update($model, array $newAttributes)
     {
         parent::update($model, $newAttributes);

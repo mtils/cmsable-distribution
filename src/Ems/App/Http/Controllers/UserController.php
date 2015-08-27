@@ -17,7 +17,7 @@ class UserController extends Controller
     protected $mapper;
 
     protected $searchColumns = [
-        'id', 'email', 'last_login'
+        'id', 'email', 'created_at', 'last_login'
     ];
 
     public function __construct(UserRepository $repository, Mapper $mapper)

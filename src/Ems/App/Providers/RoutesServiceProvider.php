@@ -13,6 +13,7 @@ class RoutesServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->registerAdminSecurityPage();
         $this->registerUserController();
         $this->registerGroupController();
         $this->registerPasswordController();
@@ -23,8 +24,50 @@ class RoutesServiceProvider extends ServiceProvider
         $this->registerFileDBPageType();
     }
 
+    protected function registerAdminSecurityPage()
+    {
+
+        $this->app['events']->listen('sitetree.filled', function(&$adminTreeArray){
+
+            $security = [
+                'id'                => 'files',
+                'page_type'         => 'cmsable.redirector',
+                'url_segment'       => 'security',
+                'icon'              => 'fa-shield',
+                'title'             => $this->app['translator']->get('ems::admintree.security.title'),
+                'menu_title'        => $this->app['translator']->get('ems::admintree.security.menu_title'),
+                'show_in_menu'      => true,
+                'show_in_aside_menu'=> false,
+                'show_in_search'    => true,
+                'show_when_authorized' => true,
+                'redirect_type'     => 'internal',
+                'redirect_target'   => 'firstchild',
+                'content'           => $this->app['translator']->get('ems::admintree.security.content'),
+                'view_permission'   => 'cms.access',
+                'edit_permission'   => 'superuser'
+            ];
+
+            $this->app['events']->fire('sitetree.security-added',[&$security]);
+
+            $adminTreeArray['children'][] = $security;
+
+        });
+    }
+
     protected function registerUserController()
     {
+
+        $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes){
+
+            $pageType = PageType::create('cmsable.users-editor')
+                                  ->setCategory('security')
+                                  ->setRouteScope('admin')
+                                  ->setTargetPath('users');
+
+            $pageTypes->add($pageType);
+
+
+        });
 
         $this->app->router->group($this->routeGroup, function($router){
             $router->resource('users','UserController');
@@ -72,10 +115,60 @@ class RoutesServiceProvider extends ServiceProvider
 
         });
 
+        $this->app['events']->listen('sitetree.security-added', function(&$security){
+
+            $users = [
+                'id'                => 'files',
+                'page_type'         => 'cmsable.users-editor',
+                'url_segment'       => 'users',
+                'icon'              => 'fa-user',
+                'title'             => $this->app['translator']->get('ems::admintree.users.title'),
+                'menu_title'        => $this->app['translator']->get('ems::admintree.users.menu_title'),
+                'show_in_menu'      => true,
+                'show_in_aside_menu'=> false,
+                'show_in_search'    => true,
+                'show_when_authorized' => true,
+                'redirect_type'     => 'none',
+                'redirect_target'   => 0,
+                'content'           => $this->app['translator']->get('ems::admintree.users.content'),
+                'view_permission'   => 'cms.access',
+                'edit_permission'   => 'superuser'
+            ];
+
+            $security['children'][] = $users;
+
+        });
+
+        $serviceProvider = $this;
+
+        $this->app['cmsable.breadcrumbs']->register('users.edit', function($breadcrumbs, $userId) use ($serviceProvider) {
+
+            foreach($this->getStoredCrumbs('users.index') as $crumb) {
+                $breadcrumbs->add($crumb);
+            }
+
+            $user = $serviceProvider->app['Permit\Registration\UserRepositoryInterface']->retrieveById($userId);
+
+            $breadcrumbs->add($user->getEmailForPasswordReset());
+
+        });
+
     }
 
     protected function registerGroupController()
     {
+
+        $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes){
+
+            $pageType = PageType::create('cmsable.groups-editor')
+                                  ->setCategory('security')
+                                  ->setRouteScope('admin')
+                                  ->setTargetPath('groups');
+
+            $pageTypes->add($pageType);
+
+
+        });
 
         $this->app->router->group($this->routeGroup, function($router){
             $router->resource('groups','GroupController');
@@ -120,6 +213,44 @@ class RoutesServiceProvider extends ServiceProvider
             );
 
             $group->push($deleteGroup);
+
+        });
+
+        $this->app['events']->listen('sitetree.security-added', function(&$security){
+
+            $users = [
+                'id'                => 'files',
+                'page_type'         => 'cmsable.groups-editor',
+                'url_segment'       => 'groups',
+                'icon'              => 'fa-users',
+                'title'             => $this->app['translator']->get('ems::admintree.groups.title'),
+                'menu_title'        => $this->app['translator']->get('ems::admintree.groups.menu_title'),
+                'show_in_menu'      => true,
+                'show_in_aside_menu'=> false,
+                'show_in_search'    => true,
+                'show_when_authorized' => true,
+                'redirect_type'     => 'none',
+                'redirect_target'   => 0,
+                'content'           => $this->app['translator']->get('ems::admintree.groups.content'),
+                'view_permission'   => 'cms.access',
+                'edit_permission'   => 'superuser'
+            ];
+
+            $security['children'][] = $users;
+
+        });
+
+        $serviceProvider = $this;
+
+        $this->app['cmsable.breadcrumbs']->register('groups.edit', function($breadcrumbs, $groupId) use ($serviceProvider) {
+
+            foreach($this->getStoredCrumbs('groups.index') as $crumb) {
+                $breadcrumbs->add($crumb);
+            }
+
+            $group = $serviceProvider->app['Permit\Groups\GroupRepositoryInterface']->findByGroupId($groupId);
+
+            $breadcrumbs->add($group->name);
 
         });
 

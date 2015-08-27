@@ -99,7 +99,20 @@ class PackageServiceProvider extends ServiceProvider
         $this->app->alias('ems.permissions', 'Permit\Permission\RepositoryInterface');
 
         $this->app->singleton('ems.permissions', function($app){
-            return $app->make('Permit\Support\Laravel\Permission\TranslatorRepository');
+            $repo = $app->make('Permit\Support\Laravel\Permission\TranslatorRepository');
+            $repo->setTranslationRoot('cmsable::permissions');
+            return $repo;
+        });
+
+        $this->app->afterResolving('ems.permissions', function($permissions){
+            $permissions->addCode('page.public-view');
+            $permissions->addCode('page.logged-view');
+            $permissions->addCode('cms.access');
+            $permissions->addCode('page.edit');
+            $permissions->addCode('page.delete');
+            $permissions->addCode('page.add-child');
+            $permissions->addCode('superuser');
+            //page.public-view
         });
 
     }

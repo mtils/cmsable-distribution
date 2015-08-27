@@ -60,14 +60,14 @@ class GroupController extends Controller
     public function edit($id)
     {
         $user = $this->repository->find($id);
-        return view('users.edit')->withModel($user);
+        return view('groups.edit')->withModel($user);
     }
 
     public function update(CleanedRequest $request, $id)
     {
         $user = $this->repository->find($id);
         $this->repository->update($user, $request->cleaned());
-        return redirect()->route('users.edit',[$id]);
+        return redirect()->route('groups.edit',[$id]);
     }
 
 }

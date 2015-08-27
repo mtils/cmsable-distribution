@@ -26,6 +26,16 @@ class GroupForm extends Form
     public function setModel($model)
     {
         $this->fillByArray($model->toArray());
+
+        foreach($model->permissionCodes() as $code){
+            $perm = $model->getPermissionAccess($code);
+            if($perm == 1){
+                $permsArray[] = (string)$code;
+            }
+        }
+
+        $this->fillByArray(['codes'=>$permsArray], 'permission');
+
         return parent::setModel($model);
     }
 
@@ -65,9 +75,11 @@ class GroupForm extends Form
 
         $permissions = $this->permissions->all();
 
-        return SelectManyField::create('groups__ids')
+        $extractor = new Extractor('getCode()', 'getTitle()');
+
+        return Form::selectMany('permission__codes')
                                 ->setClassName('MultiCheckboxField')
-                                ->setSrc($permissions, new Extractor('code', 'title'));
+                                ->setSrc($permissions, $extractor);
 
     }
 }

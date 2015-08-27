@@ -31,9 +31,25 @@ class GroupRepository extends EloquentRepository
         return static::$resourceName;
     }
 
-    public function newForm(array $attributes=[])
+    protected function fillModel(Model $group, array $attributes)
     {
-        return App::make(static::$formClass);
+
+        parent::fillModel($group, $attributes);
+
+        if (!isset($attributes['permission']['codes'])) {
+            return;
+        }
+
+        $sendedCodes = $attributes['permission']['codes'];
+
+        foreach ($group->permissionCodes() as $code) {
+            $group->setPermissionAccess($code, (int)in_array($code, $sendedCodes));
+        }
+
+        foreach ($sendedCodes as $idx=>$code) {
+            $group->setPermissionAccess($code, 1);
+        }
+
     }
 
 }
