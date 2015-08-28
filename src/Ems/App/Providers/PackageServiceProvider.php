@@ -42,6 +42,7 @@ class PackageServiceProvider extends ServiceProvider
     {
         $this->registerValidatorNamespace();
         $this->registerFormNamespace();
+        $this->registerVersatileDateFormat();
     }
 
     protected function registerValidatorNamespace()
@@ -55,6 +56,14 @@ class PackageServiceProvider extends ServiceProvider
     {
         $this->app->afterResolving('Cmsable\Resource\FormClassFinder', function($finder){
             $finder->appendNamespace('Ems\App\Http\Forms');
+        });
+    }
+
+    protected function registerVersatileDateFormat()
+    {
+        $this->app->afterResolving('versatile.type-introspector', function($introspector){
+            $dateFormat = $this->app['translator']->get('ems::base.datetime-format');
+            $introspector->setDefaultDateFormat($dateFormat);
         });
     }
 

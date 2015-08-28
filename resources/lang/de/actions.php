@@ -10,6 +10,7 @@ return [
         'edit'              => 'Benutzer bearbeiten',
         'index'             => 'Benutzer suchen',
         'create'            => 'Benutzer anlegen',
+        'activate'          => 'Benutzer aktivieren',
         'destroy'           => 'Benutzer löschen',
         'destroy-confirm'   => 'Diesen Benutzer wirklich löschen?'
     ],

@@ -20,4 +20,5 @@
         </tr>
     @endforeach
     </table>
+    {{-- Pagination --}}
     {!! $collection->getSrc()->render() !!}

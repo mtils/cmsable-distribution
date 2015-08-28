@@ -4,26 +4,29 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Ems\App\Repositories\UserRepository;
 use Cmsable\Http\Resource\CleanedRequest;
+use Permit\Registration\RegistrarInterface as Registrar;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Cmsable\Resource\Contracts\Mapper;
 use Versatile\Query\Builder;
 use App\User;
+
 
 class UserController extends Controller
 {
 
     protected $repository;
 
-    protected $mapper;
+    protected $registrar;
 
     protected $searchColumns = [
-        'id', 'email', 'created_at', 'last_login'
+        'id', 'email', 'created_at', 'activated_at', 'last_login'
     ];
 
-    public function __construct(UserRepository $repository, Mapper $mapper)
+    public function __construct(UserRepository $repository, Registrar $registrar)
     {
         $this->repository = $repository;
-        $this->mapper = $mapper;
+        $this->registrar = $registrar;
         $this->middleware('auth');
     }
 
@@ -68,6 +71,19 @@ class UserController extends Controller
         $user = $this->repository->find($id);
         $this->repository->update($user, $request->cleaned());
         return redirect()->route('users.edit',[$id]);
+    }
+
+    public function activate($id)
+    {
+
+        if(!$user = $this->repository->find($id)) {
+            throw NotFoundHttpException("User with id $id not found");
+        }
+
+        $this->registrar->activate($user);
+
+        return 'OK';
+
     }
 
 }

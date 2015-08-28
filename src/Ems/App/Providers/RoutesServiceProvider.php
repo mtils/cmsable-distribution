@@ -70,7 +70,14 @@ class RoutesServiceProvider extends ServiceProvider
         });
 
         $this->app->router->group($this->routeGroup, function($router){
+
             $router->resource('users','UserController');
+
+            $router->put('users/{users}/activate',[
+                'as'  => 'users.activate',
+                'uses'=>'UserController@activate'
+            ]);
+
         });
 
         $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
@@ -93,6 +100,30 @@ class RoutesServiceProvider extends ServiceProvider
 
         $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
 
+            if ($resource->isActivated()) {
+                return;
+            }
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('users.activate', [$resource->getAuthIdentifier()]);
+            $activateUser = new Action();
+            $activateUser->setName('users-activate')->setTitle(
+                $this->app['translator']->get('ems::actions.users.activate')
+            );
+            $activateUser->setIcon('fa-check');
+
+            $activateUser->setOnClick("putRequest('$url', window.location.href); return false;");
+            $activateUser->showIn('users','edit');
+
+            $group->push($activateUser);
+
+        });
+
+        $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
+
             if (!$this->app['auth']->allowed('cms.access')){
                 return;
             }
@@ -106,7 +137,7 @@ class RoutesServiceProvider extends ServiceProvider
             $deleteUser->showIn('users');
 
             $deleteUser->setOnClick("deleteResource('$url', this); return false;");
-            $deleteUser->showIn('users','save','delete-request','danger');
+            $deleteUser->showIn('users','save','delete-request','danger','edit');
             $deleteUser->setData('confirm-message',
                 $this->app['translator']->get('ems::actions.users.destroy-confirm')
             );

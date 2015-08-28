@@ -2,7 +2,16 @@
    /
    / Tabs Rendering
    /
-   *************************************************************************/ ?>
+   *************************************************************************/ 
+
+    $modelActions = function($form) {
+        if (!$model = $form->getModel()) {
+            return [];
+        }
+        return Actions::forItem($model);
+    };
+
+   ?>
         <? $fieldLists = $item->fieldLists() ?>
         <ul id="tabs-<?= $item->id ?>" class="nav nav-tabs">
         <? foreach($fieldLists as $field): ?>
@@ -10,6 +19,32 @@
                 <a href="#<?= $field->id ?>" data-toggle="tab" class="<?= $field->isValid() ? '' : 'text-red' ?>"><?= $field->title ?></a>
             </li>
         <? endforeach ?>
+
+<? /****************************************************************************
+   /
+   / Action context-menu
+   /
+   *************************************************************************/ ?>
+        <? $actions = $modelActions($item->getForm()) ?>
+        <? if(count($actions)): ?>
+
+        <li class="dropdown pull-right">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    Aktionen <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <? foreach($actions->filtered('edit') as $action): ?>
+                        <? if($action->isEnabled()): ?>
+                            <li role="presentation"><a role="menuitem" onclick="<?= $action->onClick ?>" tabindex="-1" href="<?= $action->url ?>" class="<?= $action->contexts ?>"><?= $action->title ?></a></li>
+                        <? endif ?>
+                    <? endforeach ?>
+                </ul>
+            </li>
+
+        <? endif ?>
+<? /****************************************************************************
+   / end Action context-menu
+   *************************************************************************/ ?>
         </ul>
 
         <div class="tab-content">
