@@ -113,7 +113,7 @@ class RoutesServiceProvider extends ServiceProvider
             $activateUser->setName('users-activate')->setTitle(
                 $this->app['translator']->get('ems::actions.users.activate')
             );
-            $activateUser->setIcon('fa-check');
+            $activateUser->setIcon('fa-sign-in');
 
             $activateUser->setOnClick("putRequest('$url', window.location.href); return false;");
             $activateUser->showIn('users','edit');
