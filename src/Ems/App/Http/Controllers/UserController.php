@@ -6,14 +6,18 @@ use Ems\App\Repositories\UserRepository;
 use Cmsable\Http\Resource\CleanedRequest;
 use Permit\Registration\RegistrarInterface as Registrar;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Ems\App\Helpers\ProvidesTexts;
 
 use Cmsable\Resource\Contracts\Mapper;
 use Versatile\Query\Builder;
 use App\User;
+use Notification;
 
 
 class UserController extends Controller
 {
+
+    use ProvidesTexts;
 
     protected $repository;
 
@@ -70,6 +74,7 @@ class UserController extends Controller
     {
         $user = $this->repository->find($id);
         $this->repository->update($user, $request->cleaned());
+        Notification::success($this->routeMessage('updated'));
         return redirect()->route('users.edit',[$id]);
     }
 
@@ -77,10 +82,13 @@ class UserController extends Controller
     {
 
         if(!$user = $this->repository->find($id)) {
-            throw NotFoundHttpException("User with id $id not found");
+            Notification::error($this->routeMessage('not-found'));
+            return 'ERROR';
         }
 
         $this->registrar->activate($user);
+
+        Notification::success($this->routeMessage('activated'));
 
         return 'OK';
 

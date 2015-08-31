@@ -12,5 +12,13 @@ return [
         'user-not-found'            => 'Der Benutzer wurde nicht gefunden.',
         'token-expired'             => 'Der Link ist um :expired_at abglaufen.',
         'token-invalid'             => 'Der übergebene Zurücksetzungs-Schlüssel ist ungültig.',
+    ],
+    'users/update' => [
+        'updated'                   => 'Der Benutzer wurde gespeichert.',
+        'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
+    ],
+    'users/activate' => [
+        'activated'                 => 'Der Benutzer wurde aktiviert.',
+        'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
     ]
 ];
