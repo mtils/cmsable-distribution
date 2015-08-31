@@ -4,7 +4,7 @@
     <div class="form-group<? if(!$item->isValid()) echo ' has-error'; ?>">
     <? $item->addCssClass('form-control') ?>
         <? if(!$item->hasCssClass('no-label')): ?>
-            <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?></label>
+            <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?><? if($item->hasCssClass('required')): ?>*<? endif ?></label>
         <? endif ?>
         <? if($item instanceof \FormObject\Field\TextField && $item->multiLine): ?>
             <textarea <?= $item->attributes->without('value') ?>><?= $item->value ?></textarea>
