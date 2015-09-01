@@ -2,7 +2,6 @@
 
 use DateTime;
 use URL;
-use Notification;
 use Permit\Authentication\CredentialsBrokerInterface as CredentialsBroker;
 use FormObject\Validator\ValidationException;
 use Permit\User\UserNotFoundException;
@@ -14,6 +13,7 @@ use Permit\Authentication\AuthenticatorInterface as Auth;
 use App\Http\Controllers\Controller;
 use Ems\App\Helpers\ProvidesTexts;
 use Cmsable\Http\Resource\CleanedRequest;
+use Cmsable\View\Contracts\Notifier;
 
 
 class PasswordController extends Controller
@@ -43,16 +43,22 @@ class PasswordController extends Controller
     protected $auth;
 
     /**
+     * @var \Cmsable\View\Contracts\Notifier
+     **/
+    protected $notifier;
+
+    /**
      * @param \Permit\Authentication\CredentialsBrokerInterface $broker
      * @param \Cmsable\Mail\MailerInterface $mailer
      * @param \Permit\Authentication\AuthenticatorInterface $auth
      **/
     public function __construct(CredentialsBroker $broker, Mailer $mailer,
-                                Auth $auth)
+                                Auth $auth, Notifier $notifier)
     {
         $this->broker = $broker;
         $this->mailer = $mailer;
         $this->auth = $auth;
+        $this->notifier = $notifier;
     }
 
     /**
@@ -89,7 +95,7 @@ class PasswordController extends Controller
 
             });
 
-            Notification::success($this->routeMessage('reset-sent'));
+            $this->notifier->success($this->routeMessage('reset-sent'));
 
             return redirect()->route('password.create-email');
 
@@ -107,7 +113,7 @@ class PasswordController extends Controller
             }
         }
 
-        Notification::error($message);
+        $this->notifier->error($message);
         return redirect()->route('password.create-email');
 
 
@@ -135,7 +141,7 @@ class PasswordController extends Controller
 
             $this->auth->loginUser($this->broker->reset($request->withConfirmations()->cleaned()), false);
 
-            Notification::success($this->routeMessage('password-changed'));
+            $this->notifier->success($this->routeMessage('password-changed'));
 
             return redirect()->to('fachpartner.personal-area-page');
 
@@ -149,7 +155,7 @@ class PasswordController extends Controller
             $message = $this->routeMessage('token-invalid');
         }
 
-        Notification::error($message);
+        $this->notifier->error($message);
         return redirect()->route('password.create-email');
 
     }

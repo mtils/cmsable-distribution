@@ -11,8 +11,7 @@ use Ems\App\Helpers\ProvidesTexts;
 use Cmsable\Resource\Contracts\Mapper;
 use Versatile\Query\Builder;
 use App\User;
-use Notification;
-
+use Cmsable\View\Contracts\Notifier;
 
 class UserController extends Controller
 {
@@ -23,14 +22,18 @@ class UserController extends Controller
 
     protected $registrar;
 
+    protected $notifier;
+
     protected $searchColumns = [
         'id', 'email', 'created_at', 'activated_at', 'last_login'
     ];
 
-    public function __construct(UserRepository $repository, Registrar $registrar)
+    public function __construct(UserRepository $repository, Registrar $registrar,
+                                Notifier $notifier)
     {
         $this->repository = $repository;
         $this->registrar = $registrar;
+        $this->notifier = $notifier;
         $this->middleware('auth');
     }
 
@@ -72,7 +75,7 @@ class UserController extends Controller
     public function store(CleanedRequest $request)
     {
         $user = $this->registrar->register($request->cleaned(), $activate=true);
-        Notification::success($this->routeMessage('stored'));
+        $this->notifier->success($this->routeMessage('stored'));
         return redirect()->route('users.index');
     }
 
@@ -86,7 +89,7 @@ class UserController extends Controller
     {
         $user = $this->repository->find($id);
         $this->repository->update($user, $request->cleaned());
-        Notification::success($this->routeMessage('updated'));
+        $this->notifier->success($this->routeMessage('updated'));
         return redirect()->route('users.edit',[$id]);
     }
 
@@ -94,13 +97,13 @@ class UserController extends Controller
     {
 
         if(!$user = $this->repository->find($id)) {
-            Notification::error($this->routeMessage('not-found'));
+            $this->notifier->error($this->routeMessage('not-found'));
             return 'ERROR';
         }
 
         $this->registrar->activate($user);
 
-        Notification::success($this->routeMessage('activated'));
+        $this->notifier->success($this->routeMessage('activated'));
 
         return 'OK';
 
@@ -116,13 +119,13 @@ class UserController extends Controller
     {
 
         if(!$user = $this->repository->find($id)) {
-            Notification::error($this->routeMessage('not-found'));
+            $this->notifier->error($this->routeMessage('not-found'));
             return 'ERROR';
         }
 
         $this->repository->delete($user);
 
-        Notification::success($this->routeMessage('destroyed'));
+        $this->notifier->success($this->routeMessage('destroyed'));
 
         return 'OK';
 
