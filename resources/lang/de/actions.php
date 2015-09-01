@@ -2,6 +2,8 @@
 
 return [
 
+    'search' => 'Suche',
+    'actions' => 'Aktionen',
     'resource' => [
         'edit' => 'bearbeiten'
     ],

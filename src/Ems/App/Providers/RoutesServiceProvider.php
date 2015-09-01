@@ -80,6 +80,42 @@ class RoutesServiceProvider extends ServiceProvider
 
         });
 
+        $this->app['cmsable.actions']->onType('App\User', function($group, $user, $context){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('users.index');
+            $searchUser = new Action();
+            $searchUser->setName('users.index')->setTitle(
+                $this->app['translator']->get('ems::actions.search')
+            );
+            $searchUser->setUrl($url);
+            $searchUser->setIcon('fa-search');
+            $searchUser->showIn('search');
+            $group->push($searchUser);
+
+        });
+
+        $this->app['cmsable.actions']->onType('App\User', function($group, $user, $context){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('users.create');
+            $createUser = new Action();
+            $createUser->setName('users.create')->setTitle(
+                $this->app['translator']->get('ems::actions.users.create')
+            );
+            $createUser->setUrl($url);
+            $createUser->setIcon('fa-search');
+            $createUser->showIn('users');
+            $group->push($createUser);
+
+        });
+
         $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
 
             if (!$this->app['auth']->allowed('cms.access')){

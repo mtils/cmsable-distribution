@@ -1,18 +1,21 @@
 <?php namespace Ems\App\Http\Forms;
 
-use Auth;
 use FormObject\Form;
 use Collection\Map\Extractor;
 use Permit\Groups\ManagerInterface as GroupManager;
+use Permit\CurrentUser\ContainerInterface as Auth;
 
 class UserSearchForm extends Form
 {
 
     protected $groups;
 
-    public function __construct(GroupManager $groups)
+    protected $auth;
+
+    public function __construct(GroupManager $groups, Auth $auth)
     {
         $this->groups = $groups;
+        $this->auth = $auth;
         $this->setMethod(self::GET);
     }
 
@@ -43,7 +46,7 @@ class UserSearchForm extends Form
     protected function createGroupField()
     {
 
-        $groups = $this->groups->findAccessableGroupsFor(Auth::user());
+        $groups = $this->groups->findAccessableGroupsFor($this->auth->user());
 
         return Form::selectMany('groups__ids')
                      ->setSrc($groups, new Extractor('id', 'name'));

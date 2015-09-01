@@ -6,7 +6,7 @@
             @if(count($actions))
             <li class="dropdown pull-right">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    Aktionen <span class="caret"></span>
+                    @lang('ems::actions.actions') <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach($actions->filtered($contexts) as $action)

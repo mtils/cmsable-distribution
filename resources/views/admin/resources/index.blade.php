@@ -6,9 +6,11 @@
 
 @include('partials.bootstrap-modal')
 
-<div class="col-lg-12 col-md-12">
-@searchForm()
-</div>
+
+<? $modelClass = Resource::modelClass() ?>
+<? $searchActions = Actions::forType($modelClass)->filtered('search') ?>
+<? $typeActions = Actions::forType($modelClass)->filtered('!search') ?>
+
 
 <? if(isset($search)){
     $collection = Listing::paginate($search);
@@ -18,8 +20,11 @@
     @if(isset($title) && $title)
     <h2 class="page-header text-right">{{ $title }}</h2>
     @endif
-    @include('partials.new-model-button')
-    @include('partials.resource-index-header')
+    @if(Resource::hasSearchForm())
+    @include('partials.resource-search-header')
+    @elseif($typeActions)
+    @include('partials.resource-no-search-header')
+    @endif
     @include('partials.table-of-resources')
 
 </div>

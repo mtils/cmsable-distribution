@@ -17,8 +17,15 @@ return [
         'updated'                   => 'Der Benutzer wurde gespeichert.',
         'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
     ],
+    'users/store' => [
+        'stored'                    => 'Der Benutzer wurde angelegt.'
+    ],
     'users/activate' => [
         'activated'                 => 'Der Benutzer wurde aktiviert.',
+        'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
+    ],
+    'users/destroy' => [
+        'destroyed'                 => 'Der Benutzer wurde gelöscht.',
         'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
     ]
 ];

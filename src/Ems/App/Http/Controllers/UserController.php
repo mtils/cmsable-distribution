@@ -64,6 +64,18 @@ class UserController extends Controller
         return view('users.index')->withSearch($search);
     }
 
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    public function store(CleanedRequest $request)
+    {
+        $user = $this->registrar->register($request->cleaned(), $activate=true);
+        Notification::success($this->routeMessage('stored'));
+        return redirect()->route('users.index');
+    }
+
     public function edit($id)
     {
         $user = $this->repository->find($id);
@@ -89,6 +101,28 @@ class UserController extends Controller
         $this->registrar->activate($user);
 
         Notification::success($this->routeMessage('activated'));
+
+        return 'OK';
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+
+        if(!$user = $this->repository->find($id)) {
+            Notification::error($this->routeMessage('not-found'));
+            return 'ERROR';
+        }
+
+        $this->repository->delete($user);
+
+        Notification::success($this->routeMessage('destroyed'));
 
         return 'OK';
 
