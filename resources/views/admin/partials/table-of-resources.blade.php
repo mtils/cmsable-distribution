@@ -21,4 +21,12 @@
     @endforeach
     </table>
     {{-- Pagination --}}
-    {!! $collection->getSrc()->render() !!}
+    <?
+        $paginator = $collection->getSrc();
+        foreach (Request::all() as $key=>$value) {
+            if ($key != 'page' && is_scalar($value) && $value !== '' && $value != 'submit') {
+                $paginator->addQuery($key, $value);
+            }
+        }
+    ?>
+    {!! $paginator->render() !!}
