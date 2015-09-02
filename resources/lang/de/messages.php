@@ -27,5 +27,27 @@ return [
     'users/destroy' => [
         'destroyed'                 => 'Der Benutzer wurde gelöscht.',
         'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
-    ]
+    ],
+    'session/store' => [
+        'credentials-invalid'       => 'Benutzername oder Passwort falsch',
+        'credentials-not-found'     => 'Benutzername oder Passwort falsch',
+        'user-not-activated'        => 'Der Benutzer wurde noch nicht aktiviert',
+        'user-suspended'            => 'Der Benutzer wurde wegen zuvieler fehlgeschlagener Anmeldeversucht gesperrt',
+        'user-banned'               => 'Das Benutzerkonto wurde deaktiviert',
+    ],
+    'session/destroy' => [
+        'loggedout'                    => 'Sie wurden abgemeldet.',
+        'loggedout-as'                 => 'Sie sind nun wieder als :email angemeldet.'
+    ],
+    'session/login-as' => [
+        'loggedout'                    => 'Sie wurden abgemeldet.',
+        'loggedin-as'                  => 'Sie sind nun als :email angemeldet.',
+        'user-not-found'               => 'Der Benutzer wurde nicht gefunden',
+        'not-authenticated'            => 'Sie müssen angemeldet sein um diese Funktion nutzen zu können',
+        'login-as-same'                => 'Sie können sich nicht als sie selbst ausgeben',
+        'login-as-admin'               => 'Es ist nicht möglich, sich als Administrator auszugeben',
+        'login-as-system'              => 'Sie können sich nicht als System-Benutzer anmelden',
+        'permission-denied'            => 'Sie haben nicht die erforderlichen Rechte um sich als jemand anders auszugeben',
+        'less-permissions'             => 'Sie können sich nicht als ein Benutzer ausgeben, welcher ein Benutzerrecht hat dass Sie nicht haben',
+    ],
 ];

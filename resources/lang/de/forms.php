@@ -12,7 +12,8 @@ return [
         'save'              => ['title'=>'Speichern'],
         'create'            => ['title'=>'Anlegen'],
         'submit'            => ['title'=>'Absenden'],
-        'search'            => ['title'=>'Suchen']
+        'search'            => ['title'=>'Suchen'],
+        'login'             => ['title'=>'Anmelden'],
     ],
 
     'user' => [
@@ -54,6 +55,11 @@ return [
     'page' => [
         'resetmail' => ['title' => 'E-Mail'],
         'ctlsettings__resetmail_subject' => ['title' => '']
+    ],
+    'login' => [
+        'email' => ['title' => 'E-Mail'],
+        'password' => ['title' => 'Passwort'],
+        'forgot-password' => ['title' => 'Passwort vergessen?']
     ]
 
 ];

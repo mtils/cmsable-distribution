@@ -14,6 +14,7 @@ class RoutesServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerAdminSecurityPage();
+        $this->registerSessionController();
         $this->registerUserController();
         $this->registerGroupController();
         $this->registerPasswordController();
@@ -52,6 +53,66 @@ class RoutesServiceProvider extends ServiceProvider
             $adminTreeArray['children'][] = $security;
 
         });
+    }
+
+    protected function registerSessionController()
+    {
+
+        $this->app->router->group($this->routeGroup, function($router){
+
+            $router->get('session/create',[
+                'as'   => 'session.create',
+                'uses' => 'SessionController@create'
+            ]);
+
+            $router->get('session/{users}/login-as',[
+                'as'   => 'session.login-as',
+                'uses' => 'SessionController@loginAs'
+            ]);
+
+
+            $router->post('session',[
+                'as'   => 'session.store',
+                'uses' => 'SessionController@store'
+            ]);
+
+            $router->get('session/destroy',[
+                'as'   => 'session.destroy',
+                'uses' => 'SessionController@destroy'
+            ]);
+
+            $router->put('session/{id}',[
+                'as'   => 'session.update',
+                'uses' => 'SessionController@update'
+            ]);
+
+        });
+
+        $this->app->afterResolving('cmsable.resource-mapper', function($mapper) {
+            $mapper->mapFormClass('session', 'Ems\App\Http\Forms\LoginForm');
+            $mapper->mapValidatorClass('session', 'Ems\App\Validators\LoginValidator');
+        });
+
+        $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource) {
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('session.login-as', [$resource->getAuthIdentifier()]);
+            $title = $this->app['translator']->get('ems::actions.users.login-as');
+
+            $variableAttributes = new Action();
+            $variableAttributes->setName('users.login-as')
+                               ->setTitle($title)
+                               ->setUrl($url)
+                               ->setIcon('fa-key')
+                               ->showIn('users','edit');
+
+            $group->push($variableAttributes);
+
+        });
+
     }
 
     protected function registerUserController()

@@ -12,11 +12,14 @@ use Cmsable\Resource\Contracts\Mapper;
 use Versatile\Query\Builder;
 use App\User;
 use Cmsable\View\Contracts\Notifier;
+use Cmsable\Resource\ResourceBus;
 
 class UserController extends Controller
 {
 
     use ProvidesTexts;
+
+    use ResourceBus;
 
     protected $repository;
 
@@ -45,24 +48,24 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = new Builder(new User());
-
         $orderBy = $request->get('sort') ?: 'created_at';
         $desc = $request->get('order') ?: 'desc';
 
         $search->withColumn($this->searchColumns)
                ->orderBy($orderBy, $desc);
 
-        foreach ($this->searchColumns as $col) {
-            if ($request->has($col)) {
-                $search->where($col, 'like', '%'.$request->input($col).'%');
+        $this->fire($this->eventName('users.query'), $search);
+
+        foreach ($search->getColumns() as $col) {
+            $requestCol = str_replace('.', '__', $col);
+            if ($request->has($requestCol)) {
+                $search->where($col, 'like', '%'.$request->input($requestCol).'%');
             }
         }
 
         if ($request->has('groups__ids')) {
             $search->whereIn('groups.id', $request->input('groups__ids'));
         }
-
-
 
         return view('users.index')->withSearch($search);
     }
