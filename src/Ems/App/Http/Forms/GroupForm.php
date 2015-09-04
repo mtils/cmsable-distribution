@@ -44,12 +44,7 @@ class GroupForm extends Form
 
         $fields = parent::createFields();
 
-        $fields->setSwitchable(true);
-
-        $mainFields = FieldList::create('main')
-                                ->setSwitchable(true);
-
-        $mainFields->push(
+        $fields->push(
             Form::text('name')
         );
 
@@ -57,9 +52,7 @@ class GroupForm extends Form
         | Groups
         |--------------------------------------------------------------------------*/
 
-        $mainFields->push($this->createPermissionField());
-
-        $fields->push($mainFields);
+        $fields->push($this->createPermissionField());
 
         return $fields;
 

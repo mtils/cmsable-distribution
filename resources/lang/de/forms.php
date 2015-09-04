@@ -30,7 +30,8 @@ return [
 
     'group' => [
         'main'        => ['title'       => 'Allgemeines'],
-        'name'       => ['title'        => 'Name']
+        'name'       => ['title'        => 'Name'],
+        'permission__codes'       => ['title'        => 'Berechtigungen'],
     ],
 
     'password-email' => [

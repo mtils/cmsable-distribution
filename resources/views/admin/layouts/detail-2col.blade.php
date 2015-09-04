@@ -4,7 +4,12 @@
 
 @include('partials.breadcrumb-in-subpath')
 
-<div class="col-lg-12 col-md-12">
+<div class="col-md-3">
+@section('side-boxes')
+@show
+</div>
+
+<div class="col-md-9">
 @include('partials.detail-box')
 </div>
 @stop
