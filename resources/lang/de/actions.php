@@ -8,7 +8,7 @@ return [
         'edit' => 'bearbeiten'
     ],
     'users' => [
-        'show'              => 'Benutzer anzeigen',
+        'show'              => 'Benutzer-Details',
         'edit'              => 'Benutzer bearbeiten',
         'index'             => 'Benutzer suchen',
         'create'            => 'Benutzer anlegen',

@@ -23,7 +23,9 @@
         </div>
     </div>
     <div class="col-lg-{{ $rightCols }} left-splitted">
+        <div class="box">
         @form()
+        </div>
     </div>
 @stop
 @section('js')

@@ -1,5 +1,5 @@
 @extends('layouts.detail')
 
 @section('inner-content')
-@form()
+<? print_r($model->toArray()) ?>
 @stop

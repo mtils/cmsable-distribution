@@ -42,7 +42,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        return $this->repository->find($id);
+        return view('users.show')->withModel($this->repository->find($id));
     }
 
     public function index(Request $request)

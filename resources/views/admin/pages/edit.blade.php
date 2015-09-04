@@ -14,7 +14,9 @@
             </div>
         </div>
         <div class="col-lg-9 col-md-8 left-splitted">
+            <div class="box">
             {!! $form !!}
+            </div>
         </div>
 @stop
 @section('js')

@@ -183,14 +183,32 @@ class RoutesServiceProvider extends ServiceProvider
                 return;
             }
 
+            $url = $this->app['url']->route('users.show', [$resource->getAuthIdentifier()]);
+            $editUser = new Action();
+            $editUser->setName('users.show')->setTitle(
+                $this->app['translator']->get('ems::actions.users.show')
+            );
+            $editUser->setUrl($url);
+            $editUser->setIcon('fa-info');
+            $editUser->showIn('users', 'main');
+            $group->push($editUser);
+
+        });
+
+        $this->app['cmsable.actions']->onItem('App\User', function($group, $user, $resource){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
             $url = $this->app['url']->route('users.edit', [$resource->getAuthIdentifier()]);
             $editUser = new Action();
-            $editUser->setName('users-edit')->setTitle(
+            $editUser->setName('users.edit')->setTitle(
                 $this->app['translator']->get('ems::actions.users.edit')
             );
             $editUser->setUrl($url);
             $editUser->setIcon('fa-edit');
-            $editUser->showIn('users');
+            $editUser->showIn('users', 'main');
             $group->push($editUser);
 
         });
