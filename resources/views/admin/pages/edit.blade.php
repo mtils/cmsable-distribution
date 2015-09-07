@@ -14,9 +14,9 @@
             </div>
         </div>
         <div class="col-lg-9 col-md-8 left-splitted">
-            <div class="box">
+            @if($editedId)<div class="box">@endif
             {!! $form !!}
-            </div>
+            @if($editedId)</div>@endif
         </div>
 @stop
 @section('js')
