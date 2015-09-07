@@ -1,9 +1,9 @@
     <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
+            <!-- h1>
                 @guessTrans(Menu::current()->menu_title)
                 <small>@guessTrans(Menu::current()->menu_title)</small>
-            </h1>
+            </h1 -->
             <ol class="breadcrumb">
             <? $breadcrumbs = Breadcrumbs::get(); $last = count($breadcrumbs)-1 ?>
             @foreach($breadcrumbs as $idx => $crumb)
@@ -14,4 +14,7 @@
                 @endif
             @endforeach
             </ol>
+
+            @section('sub-nav')
+            @show
         </section>

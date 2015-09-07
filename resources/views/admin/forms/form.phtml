@@ -4,7 +4,7 @@
 
 <? $hasTabs = $item->fields->isTabBar() ?>
 
-<? if($item->fields->isTabBar()): ?>
+<? if($hasTabs): ?>
 
 <? /****************************************************************************
    /
@@ -13,9 +13,8 @@
    *************************************************************************/ ?>
 
 <?  // Tab-Bar ?>
-    <div class="box-body">
+    <div class="nav-tabs-custom">
         <?= $item->fields ?>
-    </div>
 <? else: ?>
 
 <? /****************************************************************************
@@ -26,10 +25,12 @@
 
     <? /** Search form tabs are rendered outside of this template **/ ?>
     <? if(!$item->cssClasses->contains('search-form')): ?>
+        <div class="box">
             <div class="box-body">
                 <?= $item->fields ?>
             </div> <!-- /.box-body -->
     <? else: ?>
+        <div>
         <div class="box-body">
             <?= $item->fields ?>
         </div>
@@ -71,5 +72,5 @@
                 <button type="button" <?= $action->data ?> name="<?= $action->name ?>" onclick="<?= $action->onClick ?>" class="<?= $actionClasses ?>"><?= $action->title ?></button>
             <? endforeach ?>
         </div> <!-- /.box-footer -->
-
+    </div><!-- div.box -->
 </form>

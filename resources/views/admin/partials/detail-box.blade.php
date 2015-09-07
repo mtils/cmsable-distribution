@@ -6,10 +6,9 @@
     @endif
 
     @if(count($mainActions) > 1)
-        <div class="nav-tabs-custom">
-        @include('partials.resource-detail-box-header')
-    @else
-        <div class="box">
+        @section('sub-nav')
+        @include('partials.resource-detail-nav')
+        @stop
     @endif
         @section('inner-content')
         @show()

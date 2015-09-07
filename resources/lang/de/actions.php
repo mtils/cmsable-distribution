@@ -4,6 +4,7 @@ return [
 
     'search' => 'Suche',
     'actions' => 'Aktionen',
+    'more'    => 'Mehr...',
     'resource' => [
         'edit' => 'bearbeiten'
     ],

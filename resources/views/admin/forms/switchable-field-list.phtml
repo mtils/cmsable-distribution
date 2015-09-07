@@ -14,15 +14,14 @@
    ?>
         <? $fieldLists = $item->fieldLists() ?>
 
-        <div class="form-navi">
-            <ul id="tabs-<?= $item->id ?>" class="nav nav-tabs">
-            <? foreach($fieldLists as $field): ?>
-                <li<? if($field->isFirstList()): ?> class="active"<? endif ?>>
-                    <a href="#<?= $field->id ?>" data-toggle="tab" class="<?= $field->isValid() ? '' : 'text-red' ?>"><?= $field->title ?></a>
-                </li>
-            <? endforeach ?>
-            </ul>
-        </div>
+        <ul id="tabs-<?= $item->id ?>" class="nav nav-tabs">
+        <? foreach($fieldLists as $field): ?>
+            <li<? if($field->isFirstList()): ?> class="active"<? endif ?>>
+                <a href="#<?= $field->id ?>" data-toggle="tab" class="<?= 
+$field->isValid() ? '' : 'text-red' ?>"><?= $field->title ?></a>
+            </li>
+        <? endforeach ?>
+        </ul>
 
         <div class="tab-content">
             <? foreach($item->fieldLists() as $field): ?>
