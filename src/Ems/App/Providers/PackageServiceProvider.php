@@ -40,6 +40,8 @@ class PackageServiceProvider extends ServiceProvider
 
     public function register()
     {
+
+        $this->registerAutoBreadCrumbProvider();
         $this->registerValidatorNamespace();
         $this->registerFormNamespace();
         $this->registerVersatileDateFormat();
@@ -124,6 +126,27 @@ class PackageServiceProvider extends ServiceProvider
             //page.public-view
         });
 
+    }
+
+    protected function registerAutoBreadCrumbProvider()
+    {
+
+        $this->app['events']->listen('resource::bus.started', function($bus) {
+            $provider = $this->app->make('Ems\App\View\AutoBreadcrumbProvider');
+            $this->app->instance('ems.auto-breadcrumbs', $provider);
+        });
+
+        $this->app['events']->listen('cmsable::breadcrumbs-load', function($factory) {
+
+            if (!$this->app->bound('ems.auto-breadcrumbs')) {
+                return;
+            }
+
+            $provider = $this->app['ems.auto-breadcrumbs'];
+
+            $factory->provideFallback([$provider, 'addBreadcrumbs']);
+
+        });
     }
 
     protected function resourcePath($dir='')

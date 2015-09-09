@@ -5,12 +5,12 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <!-- img src="/cmsable/AdminLTE/img/user2-160x160.jpg" class="img-circle" alt="User Image" / -->
+              <img src="/cmsable/img/user-128px.png" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-              <p>{{ Auth::user()->contact->forename }} {{ Auth::user()->contact->surname }}</p>
+              <p>{{ Scaffold::shortName(Auth::user()) }}</p>
 
-              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+              <!-- a href="#"><i class="fa fa-circle text-success"></i> Online</a -->
             </div>
           </div>
           <!-- search form -->

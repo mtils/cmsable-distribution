@@ -24,7 +24,7 @@
     <?
         $paginator = $collection->getSrc();
         foreach (Request::all() as $key=>$value) {
-            if ($key != 'page' && is_scalar($value) && $value !== '' && $value != 'submit') {
+            if ($key != 'page' && is_scalar($value) && $value !== '') {
                 $paginator->addQuery($key, $value);
             }
         }

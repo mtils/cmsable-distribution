@@ -27,6 +27,8 @@ class GroupForm extends Form
     {
         $this->fillByArray($model->toArray());
 
+        $permsArray = [];
+
         foreach($model->permissionCodes() as $code){
             $perm = $model->getPermissionAccess($code);
             if($perm == 1){

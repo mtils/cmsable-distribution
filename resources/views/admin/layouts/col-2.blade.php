@@ -5,12 +5,13 @@
 @include('partials.breadcrumb-in-subpath')
 
 <div class="col-md-3">
-@section('side-boxes')
+@section('col-1')
 @show
 </div>
 
 <div class="col-md-9">
-@include('partials.detail-box')
+@section('inner-content')
+@show()
 </div>
 @stop
 @section('js')

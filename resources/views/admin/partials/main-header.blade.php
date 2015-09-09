@@ -22,7 +22,7 @@
                   <li class="user-header">
                     <img src="/cmsable/AdminLTE/img/avatar3.png" class="img-circle" alt="User Image" />
                     <p>
-                      {{ Auth::user()->contact->forename }} {{ Auth::user()->contact->surname }}
+                      {{ Scaffold::shortName(Auth::user()) }}
                       @if(Auth::user()->last_login) <small>Letzter Login {{ Auth::user()->last_login->format('d.m.Y H:i') }}</small> @endif
                     </p>
                   </li>

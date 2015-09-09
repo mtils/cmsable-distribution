@@ -4,26 +4,29 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Ems\App\Repositories\GroupRepository;
 use Cmsable\Http\Resource\CleanedRequest;
+use Ems\App\Helpers\ProvidesTexts;
 
 use Cmsable\Resource\Contracts\Mapper;
+use Cmsable\View\Contracts\Notifier;
 use Versatile\Query\Builder;
 use App\Group;
 
 class GroupController extends Controller
 {
 
-    protected $repository;
+    use ProvidesTexts;
 
-    protected $mapper;
+    protected $repository;
 
     protected $searchColumns = [
         'id', 'name'
     ];
 
-    public function __construct(GroupRepository $repository, Mapper $mapper)
+    public function __construct(GroupRepository $repository, Notifier $notifier)
     {
         $this->repository = $repository;
-        $this->mapper = $mapper;
+        $this->notifier = $notifier;
+
         $this->middleware('auth');
     }
 
@@ -57,6 +60,18 @@ class GroupController extends Controller
         return view('users.index')->withSearch($search);
     }
 
+    public function create()
+    {
+        return view('groups.create');
+    }
+
+    public function store(CleanedRequest $request)
+    {
+        $group = $this->repository->store($request->cleaned());
+        $this->notifier->success($this->routeMessage('stored'));
+        return redirect()->route('groups.edit',[$group->getKey()]);
+    }
+
     public function edit($id)
     {
         $user = $this->repository->find($id);
@@ -67,7 +82,23 @@ class GroupController extends Controller
     {
         $user = $this->repository->find($id);
         $this->repository->update($user, $request->cleaned());
+        $this->notifier->success($this->routeMessage('updated'));
         return redirect()->route('groups.edit',[$id]);
+    }
+
+    public function destroy($id)
+    {
+
+        if(!$user = $this->repository->find($id)) {
+            $this->notifier->error($this->routeMessage('not-found'));
+            return 'ERROR';
+        }
+
+        $this->repository->delete($user);
+
+        $this->notifier->success($this->routeMessage('destroyed'));
+
+        return 'OK';
     }
 
 }

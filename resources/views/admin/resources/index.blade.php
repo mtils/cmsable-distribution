@@ -1,30 +1,20 @@
-@extends('index')
+@extends('layouts.col-1')
 
-@section('content')
+@section('sub-nav')
+@include('partials.search-sub-nav')
+@stop
+
+@section('inner-content')
 
 <? $context = isset($context) ? $context : 'default' ?>
 
 @include('partials.bootstrap-modal')
 
-
-<? $modelClass = Resource::modelClass() ?>
-<? $searchActions = Actions::forType($modelClass)->filtered('search') ?>
-<? $typeActions = Actions::forType($modelClass)->filtered('!search') ?>
-
-
 <? if(isset($search)){
     $collection = Listing::paginate($search);
 } ?>
 
-<div class="col-lg-12 col-md-12">
-    @if(isset($title) && $title)
-    <h2 class="page-header text-right">{{ $title }}</h2>
-    @endif
-    @if(Resource::hasSearchForm())
-    @include('partials.resource-search-header')
-    @elseif($typeActions)
-    @include('partials.resource-no-search-header')
-    @endif
+    @searchForm()
     @include('partials.table-of-resources')
 
 </div>

@@ -28,6 +28,17 @@ return [
         'destroyed'                 => 'Der Benutzer wurde gelöscht.',
         'not-found'                 => 'Der Benutzer wurde nicht gefunden.'
     ],
+    'groups/update' => [
+        'updated'                   => 'Die Gruppe wurde gespeichert.',
+        'not-found'                 => 'Die Gruppe wurde nicht gefunden.'
+    ],
+    'groups/store' => [
+        'stored'                    => 'Die Gruppe wurde angelegt.'
+    ],
+    'groups/destroy' => [
+        'destroyed'                 => 'Die Gruppe wurde gelöscht.',
+        'not-found'                 => 'Die Gruppe wurde nicht gefunden.'
+    ],
     'session/store' => [
         'credentials-invalid'       => 'Benutzername oder Passwort falsch',
         'credentials-not-found'     => 'Benutzername oder Passwort falsch',

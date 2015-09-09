@@ -7,9 +7,6 @@
 
     @if(count($mainActions) > 1)
         @section('sub-nav')
-        @include('partials.resource-detail-nav')
+        @include('partials.sub-nav', ['mainActions'=>$mainActions, 'besideActions'=>$besideActions])
         @stop
     @endif
-        @section('inner-content')
-        @show()
-        </div><!-- div.nav-tabs-custom|div.box --> 

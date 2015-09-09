@@ -23,18 +23,10 @@
    /
    *************************************************************************/ ?>
 
-    <? /** Search form tabs are rendered outside of this template **/ ?>
-    <? if(!$item->cssClasses->contains('search-form')): ?>
-        <div class="box">
-            <div class="box-body">
-                <?= $item->fields ?>
-            </div> <!-- /.box-body -->
-    <? else: ?>
-        <div>
+    <div class="box">
         <div class="box-body">
             <?= $item->fields ?>
         </div>
-    <? endif ?>
 <? endif // No switchable ?>
 
 <? /****************************************************************************

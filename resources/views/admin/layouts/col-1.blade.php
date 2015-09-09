@@ -5,7 +5,8 @@
 @include('partials.breadcrumb-in-subpath')
 
 <div class="col-lg-12 col-md-12">
-@include('partials.detail-box')
+@section('inner-content')
+@show()
 </div>
 @stop
 @section('js')

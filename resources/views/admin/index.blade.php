@@ -44,9 +44,9 @@
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
-
+        @section('content-header')
         @include('partials.content-header')
-
+        @show
         <!-- Main content -->
         <section class="content">
           <div class="row">

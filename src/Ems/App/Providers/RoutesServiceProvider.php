@@ -31,7 +31,7 @@ class RoutesServiceProvider extends ServiceProvider
         $this->app['events']->listen('sitetree.filled', function(&$adminTreeArray){
 
             $security = [
-                'id'                => 'files',
+                'id'                => 'security',
                 'page_type'         => 'cmsable.redirector',
                 'url_segment'       => 'security',
                 'icon'              => 'fa-shield',
@@ -118,6 +118,13 @@ class RoutesServiceProvider extends ServiceProvider
     protected function registerUserController()
     {
 
+        $this->app->resolving('versatile.model-presenter', function($presenter) {
+            $presenter->provideShortName('Permit\Support\Laravel\User\EloquentUser', function($object) {
+                return $object->getEmailForPasswordReset();
+            });
+        });
+
+
         $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes){
 
             $pageType = PageType::create('cmsable.users-editor')
@@ -154,7 +161,7 @@ class RoutesServiceProvider extends ServiceProvider
             );
             $searchUser->setUrl($url);
             $searchUser->setIcon('fa-search');
-            $searchUser->showIn('search');
+            $searchUser->showIn('main');
             $group->push($searchUser);
 
         });
@@ -172,7 +179,7 @@ class RoutesServiceProvider extends ServiceProvider
             );
             $createUser->setUrl($url);
             $createUser->setIcon('fa-search');
-            $createUser->showIn('users');
+            $createUser->showIn('users','main');
             $group->push($createUser);
 
         });
@@ -264,7 +271,7 @@ class RoutesServiceProvider extends ServiceProvider
         $this->app['events']->listen('sitetree.security-added', function(&$security){
 
             $users = [
-                'id'                => 'files',
+                'id'                => 'users',
                 'page_type'         => 'cmsable.users-editor',
                 'url_segment'       => 'users',
                 'icon'              => 'fa-user',
@@ -282,20 +289,6 @@ class RoutesServiceProvider extends ServiceProvider
             ];
 
             $security['children'][] = $users;
-
-        });
-
-        $serviceProvider = $this;
-
-        $this->app['cmsable.breadcrumbs']->register('users.edit', function($breadcrumbs, $userId) use ($serviceProvider) {
-
-            foreach($this->getStoredCrumbs('users.index') as $crumb) {
-                $breadcrumbs->add($crumb);
-            }
-
-            $user = $serviceProvider->app['Permit\Registration\UserRepositoryInterface']->retrieveById($userId);
-
-            $breadcrumbs->add($user->getEmailForPasswordReset());
 
         });
 
@@ -318,6 +311,42 @@ class RoutesServiceProvider extends ServiceProvider
 
         $this->app->router->group($this->routeGroup, function($router){
             $router->resource('groups','GroupController');
+        });
+
+        $this->app['cmsable.actions']->onType('App\Group', function($group, $user, $context){
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            $url = $this->app['url']->route('groups.index');
+            $editGroup = new Action();
+            $editGroup->setName('groups.index')->setTitle(
+                $this->app['translator']->get('ems::actions.groups.index')
+            );
+            $editGroup->setUrl($url);
+            $editGroup->setIcon('fa-search');
+            $editGroup->showIn('groups','main');
+            $group->push($editGroup);
+
+        });
+
+        $this->app['cmsable.actions']->onType('App\Group', function($group, $user, $context){
+
+            if (!$this->app['auth']->allowed('superuser')){
+                return;
+            }
+
+            $url = $this->app['url']->route('groups.create');
+            $editGroup = new Action();
+            $editGroup->setName('groups.create')->setTitle(
+                $this->app['translator']->get('ems::actions.groups.create')
+            );
+            $editGroup->setUrl($url);
+            $editGroup->setIcon('fa-edit');
+            $editGroup->showIn('groups','main');
+            $group->push($editGroup);
+
         });
 
         $this->app['cmsable.actions']->onItem('App\Group', function($group, $user, $resource){
@@ -365,7 +394,7 @@ class RoutesServiceProvider extends ServiceProvider
         $this->app['events']->listen('sitetree.security-added', function(&$security){
 
             $users = [
-                'id'                => 'files',
+                'id'                => 'groups',
                 'page_type'         => 'cmsable.groups-editor',
                 'url_segment'       => 'groups',
                 'icon'              => 'fa-users',
