@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>CMSable | @guessTrans(Menu::current()->title)</title>
+    <title>CMSable | @guessTrans(Menu::current()->getMenuTitle())</title>
     @section('head')
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
