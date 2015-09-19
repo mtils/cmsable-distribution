@@ -5,6 +5,7 @@ use FormObject\Form;
 use Cmsable\Controller\SiteTree\SiteTreeController;
 use Illuminate\Routing\Router;
 use Ems\App\Http\Route\TreeResourceRegistrar;
+use Ems\App\Search\Criteria;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,8 @@ class PackageServiceProvider extends ServiceProvider
 
     public function boot()
     {
+
+//         $this->registerModelPresenter();
 
         Router::macro('treeResource', function($name, $controller, $options=[]) {
             $registrar = new TreeResourceRegistrar($this);
@@ -36,6 +39,8 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerPermissionRepository();
 
+        $this->registerVersatileSearchFactory();
+
     }
 
     public function register()
@@ -45,6 +50,8 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerValidatorNamespace();
         $this->registerFormNamespace();
         $this->registerVersatileDateFormat();
+        $this->registerVersatileCriteria();
+        $this->registerAutocompleteMorpher();
     }
 
     protected function registerValidatorNamespace()
@@ -67,6 +74,46 @@ class PackageServiceProvider extends ServiceProvider
             $dateFormat = $this->app['translator']->get('ems::base.datetime-format');
             $introspector->setDefaultDateFormat($dateFormat);
         });
+    }
+
+    protected function registerVersatileCriteria()
+    {
+        $this->app->afterResolving('versatile.criteria-builder', function($builder){
+            $builder->setCriteriaPrototype(new Criteria);
+        });
+    }
+    
+    protected function registerAutocompleteMorpher()
+    {
+        $this->app['events']->listen('cmsable.fill-morphers', function($morpher){
+            $morpher->on('application/json', function($response, $contentType) {
+                $autocomplete = $this->app->make('Ems\App\View\AutocompleteContentMorpher');
+                $autocomplete->morphIfQueried($response, $contentType);
+            });
+        });
+    }
+
+    protected function registerVersatileSearchFactory()
+    {
+        $this->app->singleton('versatile.search-factory', function($app) {
+            return $app->make('Ems\App\Search\ResourceSearchFactory');
+        });
+
+        $this->app->afterResolving('versatile.search-factory', function($factory) {
+
+            $searchFactory = $this->app->make('Ems\App\Search\CustomBuilderFactory');
+            $factory->forModelClass('Illuminate\Database\Eloquent\Model', [$searchFactory, 'createSearch']);
+
+        });
+    }
+
+    protected function registerModelPresenter()
+    {
+
+        $this->app->singleton('versatile.model-presenter', function($app) {
+            return $app->make('Ems\App\View\ResourceModelPresenter');
+        });
+
     }
 
     protected function registerAdminViewPath()

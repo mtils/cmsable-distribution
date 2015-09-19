@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Ems\App\Repositories\UserRepository;
 use Cmsable\Http\Resource\CleanedRequest;
+use Cmsable\Http\Resource\SearchRequest;
 use Permit\Registration\RegistrarInterface as Registrar;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Ems\App\Helpers\ProvidesTexts;
@@ -45,29 +46,20 @@ class UserController extends Controller
         return view('users.show')->withModel($this->repository->find($id));
     }
 
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
-        $search = new Builder(new User());
-        $orderBy = $request->get('sort') ?: 'created_at';
-        $desc = $request->get('order') ?: 'desc';
 
-        $search->withColumn($this->searchColumns)
-               ->orderBy($orderBy, $desc);
+        $defaults = [
+            'sort'  =>'created_at',
+            'order' => 'desc'
+        ];
 
-        $this->fire($this->eventName('users.query'), $search);
+//         if ($request->has('groups__ids')) {
+//             $search->whereIn('groups.id', $request->input('groups__ids'));
+//         }
 
-        foreach ($search->getColumns() as $col) {
-            $requestCol = str_replace('.', '__', $col);
-            if ($request->has($requestCol)) {
-                $search->where($col, 'like', '%'.$request->input($requestCol).'%');
-            }
-        }
+        return view('users.index')->withSearch($request->search($defaults));
 
-        if ($request->has('groups__ids')) {
-            $search->whereIn('groups.id', $request->input('groups__ids'));
-        }
-
-        return view('users.index')->withSearch($search);
     }
 
     public function create()
