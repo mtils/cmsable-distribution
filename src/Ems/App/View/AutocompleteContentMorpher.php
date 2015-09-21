@@ -34,13 +34,20 @@ class AutocompleteContentMorpher
     protected function morphToAutocomplete(Search $search, $response)
     {
 
-        $search->replaceKeys('company','forename','surname');
+        $keys = $this->scaffold->keys($search->modelClass(), 
+ModelPresenter::VIEW_PREVIEW );
+
+        $search->replaceKeys($keys) ;
 
         $result = $search->paginate([], 20);
 
         $this->addShortNames($result);
 
-        $response->setContent($result);
+        $array = $result->toArray();
+
+        $array['keys'] = $keys;
+
+        $response->setContent($array);
 
     }
 
