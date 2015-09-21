@@ -52,6 +52,7 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerVersatileDateFormat();
         $this->registerVersatileCriteria();
         $this->registerAutocompleteMorpher();
+        $this->registerCsvMorpher();
     }
 
     protected function registerValidatorNamespace()
@@ -88,6 +89,16 @@ class PackageServiceProvider extends ServiceProvider
         $this->app['events']->listen('cmsable::responding.application/json', function($response, $morpher) {
 
             $autocomplete = $this->app->make('Ems\App\View\AutocompleteContentMorpher');
+            return $autocomplete->morphIfQueried($response, $morpher);
+
+        });
+    }
+
+    protected function registerCsvMorpher()
+    {
+        $this->app['events']->listen('cmsable::responding.text/csv', function($response, $morpher) {
+
+            $autocomplete = $this->app->make('Ems\App\View\CsvContentMorpher');
             return $autocomplete->morphIfQueried($response, $morpher);
 
         });
