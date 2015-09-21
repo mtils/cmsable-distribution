@@ -79,11 +79,13 @@
     <script src="/cmsable/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <!-- SlimScroll -->
     <script src="/cmsable/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<!-- SlimScroll -->
+    <!-- SlimScroll -->
     <script src="/cmsable/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script src="/cmsable/js/select2/js/select2.full.min.js" type="text/javascript"></script>
     <!-- FastClick -->
     <script src='/cmsable/plugins/fastclick/fastclick.min.js'></script>
+    <!-- jquery.fileDownload -->
+    <script src='/cmsable/js/fileDownload/jquery.fileDownload.js'></script>
     <!-- AdminLTE App -->
     <script src="/cmsable/AdminLTE/js/app.min.js" type="text/javascript"></script>
     <script src="/cmsable/js/admin.js" type="text/javascript"></script>

@@ -5,6 +5,7 @@ return [
     'search' => 'Suche',
     'actions' => 'Aktionen',
     'more'    => 'Mehr...',
+    'download-searchresult'    => 'Gesamtes Suchergebnis herunterladen',
     'resource' => [
         'edit' => 'bearbeiten'
     ],

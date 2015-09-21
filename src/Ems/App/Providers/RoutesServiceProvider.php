@@ -113,6 +113,34 @@ class RoutesServiceProvider extends ServiceProvider
 
         });
 
+        $this->app['cmsable.actions']->onCollection('App\User', function($group, $user, $resource) {
+
+            if (!$this->app['auth']->allowed('cms.access')){
+                return;
+            }
+
+            if (!$resource) {
+                return;
+            }
+
+            if (!count($resource)) {
+                return;
+            }
+
+            $url = $this->app['url']->current();
+            $title = $this->app['translator']->get('ems::actions.download-searchresult');
+
+            $download = new Action();
+            $download->setName('users.login-as')
+                     ->setTitle($title)
+                     ->setOnClick("downloadSearchResult(window.location.href); return false;")
+                     ->setIcon('fa-download')
+                     ->showIn('users','index');
+
+            $group->push($download);
+
+        });
+
     }
 
     protected function registerUserController()

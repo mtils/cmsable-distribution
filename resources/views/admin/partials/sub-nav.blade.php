@@ -1,7 +1,7 @@
     <ul class="nav navbar-nav">
         @foreach($mainActions as $action)
             <li @if(Route::currentRouteName() == $action->name) class="active"@endif>
-                <a href="{{ $action->url }}" onclick="{{ $action->onClick }}" tabindex="-1" href="{{ $action->url }}">{{ $action->title }}</a>
+                <a href="{{ $action->url }}" onclick="{{ $action->onClick }}" tabindex="-1">{{ $action->title }}</a>
             </li>
         @endforeach
 

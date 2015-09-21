@@ -90,6 +90,7 @@ class CsvContentMorpher
         $response->setContent($csvString);
 
         $response->header('Content-Type', 'text/csv');
+        $response->header('Content-Disposition', 'attachment; filename=export.csv');
 
     }
 

@@ -38,7 +38,7 @@ class UserController extends Controller
         $this->repository = $repository;
         $this->registrar = $registrar;
         $this->notifier = $notifier;
-        $this->middleware('auth');
+//         $this->middleware('auth');
     }
 
     public function show($id)
