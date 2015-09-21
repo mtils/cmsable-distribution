@@ -82,14 +82,14 @@ class PackageServiceProvider extends ServiceProvider
             $builder->setCriteriaPrototype(new Criteria);
         });
     }
-    
+
     protected function registerAutocompleteMorpher()
     {
-        $this->app['events']->listen('cmsable.fill-morphers', function($morpher){
-            $morpher->on('application/json', function($response, $contentType) {
-                $autocomplete = $this->app->make('Ems\App\View\AutocompleteContentMorpher');
-                $autocomplete->morphIfQueried($response, $contentType);
-            });
+        $this->app['events']->listen('cmsable::responding.application/json', function($response, $morpher) {
+
+            $autocomplete = $this->app->make('Ems\App\View\AutocompleteContentMorpher');
+            return $autocomplete->morphIfQueried($response, $morpher);
+
         });
     }
 

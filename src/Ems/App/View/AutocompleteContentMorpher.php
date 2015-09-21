@@ -22,7 +22,7 @@ class AutocompleteContentMorpher
         $this->scaffold = $scaffold;
     }
 
-    public function morphIfQueried($response, $contentType)
+    public function morphIfQueried($response, $morpher)
     {
         if (!$search = $this->findSearch($response)) {
             return;
