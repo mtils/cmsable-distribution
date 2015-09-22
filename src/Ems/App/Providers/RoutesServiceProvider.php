@@ -498,7 +498,8 @@ class RoutesServiceProvider extends ServiceProvider
                                   ->setFormPluginClass('Ems\App\Cms\Plugins\PasswordResetPlugin')
                                   ->setTargetPath('password/email')
                                   ->setControllerCreatorClass('Ems\App\Cms\ControllerCreators\PasswordResetControllerCreator')
-                                  ->setRouteNames(['password.create-reset']);
+                                  ->setRouteNames(['password.create-reset'])
+                                  ->setRouteScope('');
 
             $pageTypes->add($pageType);
 

@@ -35,7 +35,9 @@ return [
     ],
 
     'password-email' => [
-        'email'          => ['title'=>'E-Mail']
+        'email'             => ['title'=>'E-Mail'],
+        'fill-to-send-mail' => ['title'=>'Tragen Sie Ihre E-Mail Adresse ein um Ihr Passwort zurückzusetzen'],
+        'jump-to-login'     => ['title'=>'Abbrechen']
     ],
 
     'password-reset' => [
@@ -62,7 +64,7 @@ return [
         'email' => ['title' => 'E-Mail'],
         'password' => ['title' => 'Passwort'],
         'forgot-password' => ['title' => 'Passwort vergessen?'],
-        'remember-me' => ['title' => 'Eingeloggt bleiben'],
+        'remember-me' => ['title' => 'Angemeldet bleiben'],
         'register-new' => ['title' => 'Neues Konto registrieren'],
         'login-to-start' => ['title' => 'Melden Sie sich an um die Seite zu öffnen'],
     ]

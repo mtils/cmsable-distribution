@@ -41,6 +41,8 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerVersatileSearchFactory();
 
+        $this->registerCmsAccessFilter();
+
     }
 
     public function register()
@@ -116,6 +118,34 @@ class PackageServiceProvider extends ServiceProvider
             $factory->forModelClass('Illuminate\Database\Eloquent\Model', [$searchFactory, 'createSearch']);
 
         });
+    }
+
+    protected function registerCmsAccessFilter()
+    {
+
+        $this->app['cmsable.cms']->whenScope('*', function ($scope, $route, $request, $page)
+        {
+
+            if ($page && $page->view_permission != 'page.public-view' && ! $this->app['auth']->allowed($page->view_permission)) {
+
+                if (!$this->app['auth']->user()->isGuest()) {
+                    $this->app['Cmsable\View\Contracts\Notifier']->error($this->app['translator']->get('ems::messages.pages/current.insufficient-permissions'));
+                    return redirect()->back();
+                }
+
+                $intendedUrl = $this->app['url']->full();
+                if (!str_contains($intendedUrl, '_debugbar')) {
+                    $this->app['session']->set('url.intended', $intendedUrl);
+                }
+
+                $this->app['Cmsable\View\Contracts\Notifier']->error($this->app['translator']->get('ems::messages.pages/current.not-authenticated'));
+
+                return $this->app['redirect']->route('session.create')->withErrors([
+                    $this->app['translator']->get('user.noaccess')
+                ]);
+            }
+        });
+
     }
 
     protected function registerModelPresenter()

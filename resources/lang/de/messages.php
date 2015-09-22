@@ -61,4 +61,8 @@ return [
         'permission-denied'            => 'Sie haben nicht die erforderlichen Rechte um sich als jemand anders auszugeben',
         'less-permissions'             => 'Sie können sich nicht als ein Benutzer ausgeben, welcher ein Benutzerrecht hat dass Sie nicht haben',
     ],
+    'pages/current' => [
+        'insufficient-permissions'     => 'Ihr Benutzerkonto hat nicht die Berechtigung auf diese Seite zuzugreifen.',
+        'not-authenticated'            => 'Dieser Bereich ist zugriffsgeschützt. Bitte melden Sie sich an.'
+    ],
 ];
