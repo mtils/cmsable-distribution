@@ -141,6 +141,12 @@ class RoutesServiceProvider extends ServiceProvider
 
         });
 
+        $this->app->resolving('Permit\Support\Laravel\Middleware\PerformsGuestRedirect', function($middleware){
+            $middleware->provideRedirect(function($user, $permissions){
+                return redirect()->guest($this->app['url']->route('session.create'));
+            });
+        });
+
     }
 
     protected function registerUserController()

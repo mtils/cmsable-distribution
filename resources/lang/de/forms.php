@@ -57,10 +57,14 @@ return [
         'resetmail' => ['title' => 'E-Mail'],
         'ctlsettings__resetmail_subject' => ['title' => '']
     ],
+
     'login' => [
         'email' => ['title' => 'E-Mail'],
         'password' => ['title' => 'Passwort'],
-        'forgot-password' => ['title' => 'Passwort vergessen?']
+        'forgot-password' => ['title' => 'Passwort vergessen?'],
+        'remember-me' => ['title' => 'Eingeloggt bleiben'],
+        'register-new' => ['title' => 'Neues Konto registrieren'],
+        'login-to-start' => ['title' => 'Melden Sie sich an um die Seite zu öffnen'],
     ]
 
 ];

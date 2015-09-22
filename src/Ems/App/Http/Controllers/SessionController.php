@@ -104,7 +104,7 @@ class SessionController extends Controller
 
         } catch(UserBannedException $e) {
 
-            $this->notifier->warning($this->routeMessage('user-banned'));
+            $this->notifier->error($this->routeMessage('user-banned'));
 
         }
 

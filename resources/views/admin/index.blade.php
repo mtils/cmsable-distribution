@@ -18,6 +18,9 @@
     <link href="/cmsable/css/filemanager.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="/cmsable/AdminLTE/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/cmsable/plugins/iCheck/square/blue.css">
+
     <!-- AdminLTE Skins. Choose a skin from the css/skins 
          folder instead of downloading all of them to reduce the load. -->
     <link href="/cmsable/AdminLTE/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
@@ -31,6 +34,7 @@
     <![endif]-->
     @show
   </head>
+  @section('body')
   <body class="skin-blue">
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -91,4 +95,5 @@
     <script src="/cmsable/js/admin.js" type="text/javascript"></script>
     @show
   </body>
+  @show
 </html>
