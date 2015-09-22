@@ -53,7 +53,7 @@ class CsvContentMorpher
 
         $cols = [];
         foreach ($collection->columns as $col) {
-            $cols[] = $col->title;
+            $cols[] = utf8_decode($col->title);
         }
 
         $written = fputcsv(
@@ -69,7 +69,7 @@ class CsvContentMorpher
             $new = [];
 
             foreach ($collection->columns as $col) {
-                $new[] = $col->value;
+                $new[] = utf8_decode($col->value);
             }
 
             $written = fputcsv(
@@ -89,7 +89,7 @@ class CsvContentMorpher
 
         $response->setContent($csvString);
 
-        $response->header('Content-Type', 'text/csv');
+        $response->header('Content-Type', 'text/csv; charset=ISO-8859-1');
         $response->header('Content-Disposition', 'attachment; filename=export.csv');
 
     }
