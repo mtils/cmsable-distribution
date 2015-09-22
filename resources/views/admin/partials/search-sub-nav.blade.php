@@ -1,7 +1,7 @@
     <? $modelClass = Resource::modelClass() ?>
     <? $mainActions = Actions::forType($modelClass)->filtered('main') ?>
     <? $besideActions = Actions::forType($modelClass)->filtered('!main') ?>
-    <? $collectionActions = Actions::forCollection($collection)->filtered('!main') ?>
+    <? $collectionActions = isset($collection) ? Actions::forCollection($collection)->filtered('!main') : [] ?>
     @if(count($collectionActions))
     @foreach($collectionActions as $action)
     <? $besideActions->push($action) ?>
