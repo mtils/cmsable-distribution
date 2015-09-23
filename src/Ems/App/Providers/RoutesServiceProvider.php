@@ -147,6 +147,28 @@ class RoutesServiceProvider extends ServiceProvider
             });
         });
 
+        $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes) {
+
+            $pageType = PageType::create('cmsable.login-page')
+                                  ->setCategory('security')
+                                  ->setRouteScope('default')
+                                  ->setTargetPath('session/create')
+                                  ->setRouteNames(['session.create']);
+
+            $pageTypes->add($pageType);
+
+            $pageType = PageType::create('cmsable.logout-page')
+                                  ->setCategory('security')
+                                  ->setRouteScope('default')
+                                  ->setTargetPath('session/destroy')
+                                  ->setFormPluginClass('Ems\App\Cms\Plugins\LogoutPlugin')
+                                  ->setRouteNames(['session.destroy']);
+
+            $pageTypes->add($pageType);
+
+
+        });
+
     }
 
     protected function registerUserController()
