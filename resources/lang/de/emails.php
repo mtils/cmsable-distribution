@@ -13,5 +13,9 @@ return [
                     <br/><br/>
                     Sollten Sie die Funktion nicht genutzt haben, können Sie diese
                     E-Mail ignorieren.'
+    ],
+    'inquiries/store' => [
+        'subject'        => 'Kontaktanfrage auf Website',
+        'body'           => '<h4>{name} hat folgende Nachricht geschrieben:</h4> {message}.'
     ]
 ];

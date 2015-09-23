@@ -18,6 +18,7 @@ class RoutesServiceProvider extends ServiceProvider
         $this->registerUserController();
         $this->registerGroupController();
         $this->registerPasswordController();
+        $this->registerInquiryController();
     }
 
     public function register()
@@ -544,9 +545,32 @@ class RoutesServiceProvider extends ServiceProvider
             $mapper->mapToRoute('password.store-reset', 'password-resets');
         });
 
-//         $this->app->afterResolving('cmsable.resource-mapper', function($mapper) {
-//             $mapper->mapFormClass('password-emails','Ems\App\Http\Forms\PasswordEmailForm');
-//         });
+    }
+
+    protected function registerInquiryController()
+    {
+
+        $this->app->router->group($this->routeGroup, function($router) {
+
+            $router->get('inquiries/create',[
+                'as'   => 'inquiries.create',
+                'uses' => 'InquiryController@create'
+            ]);
+
+            $router->post('inquiries',[
+                'as'   => 'inquiries.store',
+                'uses' => 'InquiryController@store'
+            ]);
+
+        });
+
+        $this->app->afterResolving('cmsable.resource-distributor', function($mapper) {
+            $mapper->setRules('inquiries', [
+                'name'=>'min:3|max:255|required',
+                'email'=>'email|required',
+                'message'=>'required'
+            ]);
+        });
 
     }
 

@@ -67,6 +67,12 @@ return [
         'remember-me' => ['title' => 'Angemeldet bleiben'],
         'register-new' => ['title' => 'Neues Konto registrieren'],
         'login-to-start' => ['title' => 'Melden Sie sich an um die Seite zu öffnen'],
+    ],
+
+    'inquiry' => [
+        'name' => ['title' => 'Ihr Name'],
+        'email' => ['title' => 'Ihre E-Mail Adresse'],
+        'message' => ['title' => 'Nachricht']
     ]
 
 ];

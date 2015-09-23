@@ -65,4 +65,7 @@ return [
         'insufficient-permissions'     => 'Ihr Benutzerkonto hat nicht die Berechtigung auf diese Seite zuzugreifen.',
         'not-authenticated'            => 'Dieser Bereich ist zugriffsgeschützt. Bitte melden Sie sich an.'
     ],
+    'inquiries/store' => [
+        'thanks-for-message'     => 'Vielen Dank für Ihre Anfrage'
+    ],
 ];
