@@ -1,33 +1,35 @@
 <?php namespace Ems\App\Http\Forms;
 
-use URL;
 use FormObject\Form;
-use FormObject\Field\TextField;
-use FormObject\Field\PasswordField;
-use FormObject\Field\LiteralField;
 use Illuminate\Translation\Translator;
 use Illuminate\Contracts\Routing\UrlGenerator;
 
 class LoginForm extends Form
 {
 
-    public $validationRules = [
-
-        'email'     => 'email|required',
-        'password'  => 'required'
-
-    ];
-
+    /**
+     * @var \Illuminate\Translation\Translator
+     **/
     protected $translator;
 
+    /**
+     * @var \Illuminate\Contracts\Routing\UrlGenerator
+     **/
     protected $url;
 
+    /**
+     * @param \Illuminate\Translation\Translator $translator
+     * @param \Illuminate\Contracts\Routing\UrlGenerator $url
+     **/
     public function __construct(Translator $translator, UrlGenerator $url)
     {
         $this->translator = $translator;
         $this->url = $url;
     }
 
+    /**
+     * @return \FormObject\FieldList
+     **/
     public function createFields()
     {
 
@@ -42,13 +44,16 @@ class LoginForm extends Form
             Form::password('password')
         )->push(
             Form::literal('forgot-password')->setContent(
-             "<p><a href=\"$forgotPasswordUrl\">$forgotPassword</a></p>"
+             "<a href=\"$forgotPasswordUrl\">$forgotPassword</a>"
             )
         );
 
         return $fields;
     }
 
+    /**
+     * @return \FormObject\FieldList
+     **/
     public function createActions()
     {
         return parent::createActionList('login');
