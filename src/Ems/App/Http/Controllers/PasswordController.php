@@ -28,6 +28,11 @@ class PasswordController extends Controller
     public $createResetView = 'passwords.create-reset';
 
     /**
+     * @var callable
+     **/
+    public $storeRedirectProvider;
+
+    /**
      * @var \Permit\Authentication\CredentialsBrokerInterface
      **/
     protected $broker;
@@ -59,6 +64,9 @@ class PasswordController extends Controller
         $this->mailer = $mailer;
         $this->auth = $auth;
         $this->notifier = $notifier;
+        $this->storeRedirectProvider = function($user) {
+            return redirect()->to('/');
+        };
     }
 
     /**
@@ -137,13 +145,15 @@ class PasswordController extends Controller
      */
     public function storeReset(CleanedRequest $request, $token)
     {
+
         try {
 
-            $this->auth->loginUser($this->broker->reset($request->withConfirmations()->cleaned()), false);
+            $user = $this->broker->reset($request->withConfirmations()->cleaned());
+            $this->auth->loginUser($user, false);
 
             $this->notifier->success($this->routeMessage('password-changed'));
 
-            return redirect()->to('fachpartner.personal-area-page');
+            return call_user_func($this->storeRedirectProvider, $user);
 
         } catch (UserNotFoundException $e) {
             $message = $this->routeMessage('user-not-found');
@@ -158,6 +168,19 @@ class PasswordController extends Controller
         $this->notifier->error($message);
         return redirect()->route('password.create-email');
 
+    }
+
+    /**
+     * Pass a callable which deceides where the user will be redirected after
+     * he stored his new password.
+     *
+     * @param callable $provider
+     * @return self
+     **/
+    public function provideStoreRedirect(callable $provider)
+    {
+        $this->storeRedirectProvider = $provider;
+        return $this;
     }
 
 }

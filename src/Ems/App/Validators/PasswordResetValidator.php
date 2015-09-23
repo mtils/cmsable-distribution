@@ -4,5 +4,8 @@ use Cmsable\Resource\ResourceValidator;
 
 class PasswordResetValidator extends ResourceValidator
 {
-    protected $rules = ['password' => 'required|confirmed'];
+    protected $rules = [
+        'password' => 'required|confirmed',
+        'password_confirmation' => 'required'
+    ];
 }
