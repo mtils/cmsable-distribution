@@ -568,8 +568,47 @@ class RoutesServiceProvider extends ServiceProvider
             $mapper->setRules('inquiries', [
                 'name'=>'min:3|max:255|required',
                 'email'=>'email|required',
-                'message'=>'required'
+                'message'=>'required',
+                'topic' => 'required|numeric'
             ]);
+        });
+
+        $this->app->resolving('Ems\App\Services\Inquiry\PageTypeConfigRecipientsProvider', function($provider) {
+            $provider->defaultRecipient = $this->app['config']['mail.from.address'];
+        });
+
+        if ($this->app->bound('Ems\App\Contracts\Messaging\RecipientsProvider')) {
+            return;
+        }
+
+        $this->app->bind('Ems\App\Contracts\Messaging\RecipientsProvider', function($app){
+            return $app->make('Ems\App\Services\Inquiry\PageTypeConfigRecipientsProvider');
+        });
+
+        $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes){
+
+            $pageTypeArray = [
+                'id' => 'cmsable.inquiry-page',
+                'category' => 'default',
+                'targetPath' => 'inquiries/create',
+                'routeScope' => 'default',
+                'controllerCreatorClass' => 'Ems\App\Cms\ControllerCreators\InquiryControllerCreator',
+                'formPluginClass' => 'Ems\App\Cms\Plugins\InquiryPlugin'
+            ];
+
+            $pageType = $pageTypes->createFromArray($pageTypeArray);
+
+            $pageTypes->add($pageType);
+
+            $configTypeRepo = $this->app->make('Cmsable\PageType\ConfigTypeRepositoryInterface');
+
+            $configTypeRepo->setTemplate('cmsable.inquiry-page',[
+                'single_or_multiple' => 'single',
+                'recipients' => [],
+                'single_recipient' => ''
+            ]);
+
+
         });
 
     }

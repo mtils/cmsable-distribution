@@ -11,6 +11,14 @@ return [
         'resetpage_title'               => ['title'=>'Titel'],
         'resetpage_content'             => ['title'=>'Inhalt',
                                             'description'=>'Dies ist die Seite auf welche der Benutzer zum Ändern seines Passworts geleitet wird'],
+    ],
+    'inquiry' => [
+        'recipients_tab'                => ['title'=>'Empfänger'],
+        'send_to_single'                => ['title'=>'Alle Mails an einen Empfänger senden'],
+        'send_to_multiple'              => ['title'=>'An verschiedene Empfänger senden'],
+        'single_recipient'              => ['title'=>'Empfänger'],
+        'topic'                         => ['title'=>'Thema'],
+        'recipient'                     => ['title'=>'Empfänger Email-Adresse'],
     ]
 
 ];

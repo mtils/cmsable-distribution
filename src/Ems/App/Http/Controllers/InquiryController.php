@@ -10,14 +10,17 @@ use App\Http\Controllers\Controller;
 use Cmsable\Http\Resource\CleanedRequest;
 use Cmsable\Mail\MailerInterface as Mailer;
 use Cmsable\View\Contracts\Notifier;
-
-use Notification;
-
+use Ems\App\Contracts\Messaging\RecipientsProvider as Recipients;
 
 class InquiryController extends Controller
 {
 
     use ProvidesTexts;
+
+    /**
+     * @var \Ems\App\Contracts\Messaging\RecipientsProvider
+     **/
+    protected $recipients;
 
     /**
      * @var \Cmsable\Mail\MailerInterface
@@ -29,13 +32,10 @@ class InquiryController extends Controller
      **/
     protected $notifier;
 
-    protected $subject = 'Kontaktanfrage';
-
-    protected $answer = 'Vielen Dank für Ihre Anfrage';
-
-    public function __construct(Mailer $mailer,
+    public function __construct(Recipients $recipients, Mailer $mailer,
                                 Notifier $notifier)
     {
+        $this->recipients = $recipients;
         $this->mailer = $mailer;
         $this->notifier = $notifier;
 
@@ -51,10 +51,14 @@ class InquiryController extends Controller
 
         $data = $request->cleaned();
 
+        $recipient = $this->recipients->recipientsFor($data['topic'])[0];
+
+        $data['recipient'] = $recipient;
+
         $data['subject'] = $this->routeMailText('subject');
         $data['body']    = $this->routeMailText('body');
 
-        $this->mailer->to($data['email'])->send('inquiries.email', $data, function($msg) use ($data) {
+        $this->mailer->to($data['recipient'])->send('inquiries.email', $data, function($msg) use ($data) {
             $msg->replyTo($data['email'], $data['name']);
         });
 

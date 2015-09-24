@@ -20,5 +20,9 @@ return [
     'cmsable/admin-redirect' => [
         'title'         => 'CMS-Menüpunkt|CMS-Menüpunkte',
         'description'   => 'Ein Menüpunkt um in das CMS zu springen'
+    ],
+    'cmsable/inquiry-page' => [
+        'title'         => 'Kontakt-Seite|Kontakt-Seiten',
+        'description'   => 'Eine Seite mit einem Kontaktformular'
     ]
 ];

@@ -72,7 +72,8 @@ return [
     'inquiry' => [
         'name' => ['title' => 'Ihr Name'],
         'email' => ['title' => 'Ihre E-Mail Adresse'],
-        'message' => ['title' => 'Nachricht']
+        'message' => ['title' => 'Nachricht'],
+        'topic' => ['title' => 'Thema']
     ]
 
 ];
