@@ -74,7 +74,7 @@ trait ProvidesTexts
             throw new OutOfBoundsException("No translation route key known for group $group");
         }
 
-        return $this->_translationNamespace . $this->_groupToRootname[$group];
+        return $this->translationNamespace() . $this->_groupToRootname[$group];
     }
 
     protected function translator()
@@ -91,6 +91,11 @@ trait ProvidesTexts
             $this->currentRouteKey = str_replace('.','/',Route::currentRouteName());
         }
         return $this->currentRouteKey;
+    }
+
+    protected function translationNamespace()
+    {
+        return $this->_translationNamespace;
     }
 
 }
