@@ -310,8 +310,30 @@ class PackageServiceProvider extends ServiceProvider
 
     protected function registerMultiRenderer()
     {
+
         $this->app->singleton('cmsable-dist.multi-renderer', function($app){
             return $app->make('Ems\App\View\MultiRenderer');
+        });
+
+        $this->app->afterResolving('cmsable-dist.multi-renderer', function($renderer){
+            $this->extendMultiRenderer($renderer);
+        });
+
+    }
+
+    protected function extendMultiRenderer($renderer)
+    {
+
+        $renderer->extend('css', function() {
+
+            $eventName = "cmsable-dist.css." . $this->app['router']->currentRouteName();
+
+            if ($results = $this->app['events']->fire($eventName, [], false)) {
+                $style = implode("\n", $results);
+                return $style;
+            }
+
+            return '';
         });
     }
 

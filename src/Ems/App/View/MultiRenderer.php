@@ -1,7 +1,7 @@
 <?php namespace Ems\App\View;
 
 use Cmsable\Support\HoldsContainer;
-use Signal\Support\Extendable;
+use Ems\Support\Traits\Extendable;
 use BeeTree\Contracts\Node;
 use Cmsable\Support\ReceivesContainerWhenResolved;
 
@@ -25,7 +25,7 @@ class MultiRenderer implements ReceivesContainerWhenResolved
 
     public function __call($method, array $params=[])
     {
-        return $this->callExtend($method, $params);
+        return $this->callExtension($method, $params);
     }
 
 }
