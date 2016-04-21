@@ -100,8 +100,8 @@ class PackageServiceProvider extends ServiceProvider
     {
         $this->app['events']->listen('cmsable::responding.text/csv', function($response, $morpher) {
 
-            $autocomplete = $this->app->make('Ems\App\View\CsvContentMorpher');
-            return $autocomplete->morphIfQueried($response, $morpher);
+            $csvContentMorpher = $this->app->make('Ems\App\View\CsvContentMorpher');
+            return $csvContentMorpher->morphIfQueried($response, $morpher);
 
         });
     }
