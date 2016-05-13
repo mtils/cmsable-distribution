@@ -254,7 +254,7 @@ class RoutesServiceProvider extends ServiceProvider
             );
             $editUser->setUrl($url);
             $editUser->setIcon('fa-info');
-            $editUser->showIn('users', 'main');
+            $editUser->showIn('users', 'main', 'show-tabs');
             $group->push($editUser);
 
         });
