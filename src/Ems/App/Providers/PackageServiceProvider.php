@@ -6,6 +6,7 @@ use Cmsable\Controller\SiteTree\SiteTreeController;
 use Illuminate\Routing\Router;
 use Ems\App\Http\Route\TreeResourceRegistrar;
 use Ems\App\Search\Criteria;
+use Ems\App\Repositories\MailConfigRepository;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,8 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerCmsAccessFilter();
 
+        $this->registerSystemUserIdFinder();
+
     }
 
     public function register()
@@ -55,6 +58,8 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerVersatileCriteria();
         $this->registerAutocompleteMorpher();
         $this->registerCsvMorpher();
+        $this->registerSystemAccessChecker();
+        $this->registerMailConfigRepository();
     }
 
     protected function registerValidatorNamespace()
@@ -334,6 +339,35 @@ class PackageServiceProvider extends ServiceProvider
             }
 
             return '';
+        });
+    }
+
+    protected function registerSystemUserIdFinder()
+    {
+
+        $this->app->afterResolving('Ems\App\Repositories\MailConfigRepository', function($repo){
+            $repo->provideSystemUserId(function(){
+                $user = $this->app['auth.driver']->getProvider()
+                             ->retrieveByCredentials(['email'=>'system@local.com']);
+                return $user->id;
+            });
+        });
+
+    }
+
+    protected function registerSystemAccessChecker()
+    {
+        $this->app->resolving('Permit\Access\CheckerChain', function($chain) {
+
+            $chain->prependChecker($this->app->make('Ems\App\Services\Auth\Permit\SystemAccessChecker'));
+
+        });
+    }
+
+    protected function registerMailConfigRepository()
+    {
+        $this->app->singleton('Ems\App\Contracts\Mail\SystemMailConfigRepository', function(){
+            return $this->app['Ems\App\Repositories\MailConfigRepository'];
         });
     }
 

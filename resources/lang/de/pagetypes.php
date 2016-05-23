@@ -24,5 +24,9 @@ return [
     'cmsable/inquiry-page' => [
         'title'         => 'Kontakt-Seite|Kontakt-Seiten',
         'description'   => 'Eine Seite mit einem Kontaktformular'
+    ],
+    'cmsable/mailconfig-editor/system' => [
+        'title'         => 'Mails-Verwaltung|Mails-Verwaltungsseiten',
+        'description'   => 'Eine Seite auf der man Systemmails oder Newsletter bearbeiten kann'
     ]
 ];

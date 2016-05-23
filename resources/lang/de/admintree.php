@@ -20,5 +20,15 @@ return [
         'title'         => 'Dateiverwaltung',
         'menu_title'    => 'Dateien',
         'content'       => ''
+    ],
+    'mails' => [
+        'title'         => 'Mail Verwaltung',
+        'menu_title'    => 'Mails',
+        'content'       => ''
+    ],
+    'mail-config-system' => [
+        'title'         => 'System-Mail Verwaltung',
+        'menu_title'    => 'System Mails',
+        'content'       => ''
     ]
 ];

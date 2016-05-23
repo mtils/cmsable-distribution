@@ -66,6 +66,7 @@ return [
         'not-authenticated'            => 'Dieser Bereich ist zugriffsgeschützt. Bitte melden Sie sich an.'
     ],
     'inquiries/store' => [
-        'thanks-for-message'     => 'Vielen Dank für Ihre Anfrage'
+        'thanks-for-message'     => 'Vielen Dank für Ihre Anfrage',
+        'validation-failed'      => '<strong>Hinweis:</strong> Ihre Kontaktanfrage konnte nicht versendet werden. Bitte kontrollieren Sie <strong>die rot markierten Eingabefelder</strong> und versuchen es dann erneut.'
     ],
 ];

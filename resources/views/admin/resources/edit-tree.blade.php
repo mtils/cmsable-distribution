@@ -18,7 +18,7 @@
         <br/><br/>
         @endif
         <? $iconClass = isset($iconClass) ? $iconClass : 'normal' ?>
-        <div id="tree-container" data-edit-url="{{ URL::route(Resource::getCurrentResource().'.index') }}">
+        <div id="tree-container" data-edit-url="{{ isset($editUrl) ? $editUrl : URL::route(Resource::getCurrentResource().'.index') }}">
             <ul>{!! Render::tree($model)->iconClass($iconClass) !!}</ul>
         </div>
     </div>

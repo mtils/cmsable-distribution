@@ -7,9 +7,9 @@ use Auth;
 use Scaffold;
 use Ems\App\Helpers\ProvidesTexts;
 use App\Http\Controllers\Controller;
-use Cmsable\Http\Resource\CleanedRequest;
 use Cmsable\Mail\MailerInterface as Mailer;
 use Cmsable\View\Contracts\Notifier;
+use Ems\App\Http\Requests\CleanedRequest;
 use Ems\App\Contracts\Messaging\RecipientsProvider as Recipients;
 
 class InquiryController extends Controller

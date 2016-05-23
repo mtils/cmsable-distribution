@@ -4,15 +4,18 @@ use App;
 use Route;
 use OutOfBoundsException;
 use DateTime;
+use ReflectionObject;
 
 trait ProvidesTexts
 {
 
     protected $_translator;
 
-    protected $_translationNamespace = 'ems::';
+    protected $_translationNamespace = null;
 
     protected $currentRouteKey;
+
+    protected $_currentRoute;
 
     protected $_groupToRootname = [
         'form'      => 'forms',
@@ -28,10 +31,14 @@ trait ProvidesTexts
 
     protected function routeMessage($key, array $replace = array(), $locale = null)
     {
+        return $this->trans($this->routeMessageKey($key), $replace, $locale);
+    }
+
+    protected function routeMessageKey($key)
+    {
         $baseKey = $this->baseTransKey('message');
         $route = $this->currentRouteKey();
-        $completeKey = "$baseKey.$route.$key";
-        return $this->trans($completeKey, $replace, $locale);
+        return "$baseKey.$route.$key";
     }
 
     protected function routeMailText($key, array $replace = array(), $locale = null)
@@ -93,9 +100,64 @@ trait ProvidesTexts
         return $this->currentRouteKey;
     }
 
+    protected function currentRoute()
+    {
+        if (!$this->_currentRoute) {
+            $this->_currentRoute = Route::current();
+        }
+        return $this->_currentRoute;
+    }
+
     protected function translationNamespace()
     {
+        if ($this->_translationNamespace === null) {
+            $this->_translationNamespace = $this->detectTranslationNamespace();
+        }
         return $this->_translationNamespace;
+    }
+
+    public function setTranslastionNamespace($namespace)
+    {
+        $this->_translationNamespace = $namespace;
+        return $this;
+    }
+
+    protected function detectTranslationNamespace()
+    {
+        $classNamespace = $this->classNamespaceForTranslation();
+
+        if (starts_with($classNamespace, 'App\\')) {
+            return '';
+        }
+
+        $segments = explode('\\', $classNamespace);
+
+        if (!$segments) {
+            return '';
+        }
+
+        return snake_case($segments[0], '-') . '::';
+    }
+
+    protected function classNamespaceForTranslation()
+    {
+        return (new \ReflectionObject($this))->getNamespaceName();
+    }
+
+    protected function hasRouteMessage($key)
+    {
+        $msgKey = $this->routeMessageKey($key);
+        $msg = $this->routeMessage($key);
+        if ($msg == $msgKey) {
+            return false;
+        }
+        return trim($msg) != '';
+    }
+
+    protected function isTransKey($msg)
+    {
+        return starts_with($msg, $this->_translationNamespace)
+               && (mb_strpos($msg, ' ') === false);
     }
 
 }

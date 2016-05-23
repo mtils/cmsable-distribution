@@ -13,8 +13,10 @@ class RoutesServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->registerAdminMailPage();
         $this->registerAdminSecurityPage();
         $this->registerSessionController();
+        $this->registerMailConfigController();
         $this->registerUserController();
         $this->registerGroupController();
         $this->registerPasswordController();
@@ -24,6 +26,36 @@ class RoutesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerFileDBPageType();
+    }
+
+    protected function registerAdminMailPage()
+    {
+
+        $this->app['events']->listen('sitetree.filled', function(&$adminTreeArray){
+
+            $security = [
+                'id'                => 'mails',
+                'page_type'         => 'cmsable.redirector',
+                'url_segment'       => 'mails',
+                'icon'              => 'fa-envelope',
+                'title'             => $this->app['translator']->get('ems::admintree.mails.title'),
+                'menu_title'        => $this->app['translator']->get('ems::admintree.mails.menu_title'),
+                'show_in_menu'      => true,
+                'show_in_aside_menu'=> false,
+                'show_in_search'    => true,
+                'show_when_authorized' => true,
+                'redirect_type'     => 'internal',
+                'redirect_target'   => 'firstchild',
+                'content'           => $this->app['translator']->get('ems::admintree.mails.content'),
+                'view_permission'   => 'cms.access',
+                'edit_permission'   => 'superuser'
+            ];
+
+            $this->app['events']->fire('sitetree.mails-added',[&$security]);
+
+            $adminTreeArray['children'][] = $security;
+
+        });
     }
 
     protected function registerAdminSecurityPage()
@@ -167,6 +199,54 @@ class RoutesServiceProvider extends ServiceProvider
 
             $pageTypes->add($pageType);
 
+
+        });
+
+    }
+
+    protected function registerMailConfigController()
+    {
+
+        $this->app['events']->listen('cmsable.pageTypeLoadRequested', function($pageTypes){
+
+            $pageType = PageType::create('cmsable.mailconfig-editor.system')
+                                  ->setCategory('mails')
+                                  ->setRouteScope('admin')
+                                  ->setTargetPath('mail-configurations')
+                                  ->setControllerCreatorClass('Ems\App\Cms\ControllerCreators\MailConfigControllerCreator');
+
+            $pageTypes->add($pageType);
+
+
+        });
+
+        $this->app->router->group($this->routeGroup, function($router){
+
+            $router->resource('mail-configurations','MailConfigController');
+
+        });
+
+        $this->app['events']->listen('sitetree.mails-added', function(&$mails){
+
+            $mailsConfigs = [
+                'id'                => 'mail-configs.system',
+                'page_type'         => 'cmsable.mailconfig-editor.system',
+                'url_segment'       => 'mail-configurations',
+                'icon'              => 'fa-gears',
+                'title'             => $this->app['translator']->get('ems::admintree.mail-config-system.title'),
+                'menu_title'        => $this->app['translator']->get('ems::admintree.mail-config-system.menu_title'),
+                'show_in_menu'      => true,
+                'show_in_aside_menu'=> false,
+                'show_in_search'    => true,
+                'show_when_authorized' => true,
+                'redirect_type'     => 'none',
+                'redirect_target'   => 0,
+                'content'           => $this->app['translator']->get('ems::admintree.mail-config-system.content'),
+                'view_permission'   => 'cms.access',
+                'edit_permission'   => 'superuser'
+            ];
+
+            $mails['children'][] = $mailsConfigs;
 
         });
 
