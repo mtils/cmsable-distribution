@@ -74,6 +74,11 @@ return [
         'email' => ['title' => 'Ihre E-Mail Adresse'],
         'message' => ['title' => 'Nachricht'],
         'topic' => ['title' => 'Thema']
+    ],
+
+    'shout-out-box' => [
+        'shout' => ['title' => 'Ausruf'],
+        'link' => ['title'  => 'Link Adresse']
     ]
 
 ];

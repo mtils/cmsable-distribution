@@ -4,6 +4,7 @@
     <link href="/cmsable/css/sitetree.css" rel="stylesheet" type="text/css" />
 @stop
 @section('content')
+        @include('partials.bootstrap-modal')
         <div class="col-lg-3 col-md-4">
             <div class="btn btn-primary btn-file new-page">
                 <i class="fa fa-edit"></i>

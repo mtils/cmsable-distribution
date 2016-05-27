@@ -7,8 +7,8 @@
       </div>
       <div class="modal-body">
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+      <div class="modal-footer" id="original-modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ Lang::get('ems::actions.cancel') }}</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

@@ -5,9 +5,14 @@ return [
     'search' => 'Suche',
     'actions' => 'Aktionen',
     'more'    => 'Mehr...',
+    'cancel'  => 'Abbrechen',
     'download-searchresult'    => 'Gesamtes Suchergebnis herunterladen',
     'resource' => [
         'edit' => 'bearbeiten'
+    ],
+    'widgets' => [
+        'add'           => 'Inhalt hinzufügen',
+        'create-widget' => ':widgetTitle hinzufügen'
     ],
     'users' => [
         'show'              => 'Benutzer-Details',

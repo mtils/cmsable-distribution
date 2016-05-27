@@ -91,6 +91,8 @@
     <script src='/cmsable/plugins/fastclick/fastclick.min.js'></script>
     <!-- jquery.fileDownload -->
     <script src='/cmsable/js/fileDownload/jquery.fileDownload.js'></script>
+    <!-- html5sortable -->
+    <script src='/cmsable/js/html5sortable/html.sortable.min.js'></script>
     <!-- AdminLTE App -->
     <script src="/cmsable/AdminLTE/js/app.min.js" type="text/javascript"></script>
     <script src="/cmsable/js/admin.js" type="text/javascript"></script>
