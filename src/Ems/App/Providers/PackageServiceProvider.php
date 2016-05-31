@@ -7,6 +7,7 @@ use Illuminate\Routing\Router;
 use Ems\App\Http\Route\TreeResourceRegistrar;
 use Ems\App\Search\Criteria;
 use Ems\App\Repositories\MailConfigRepository;
+use Cmsable\Widgets\Contracts\Registry as WidgetRegistry;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -60,6 +61,11 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerCsvMorpher();
         $this->registerSystemAccessChecker();
         $this->registerMailConfigRepository();
+
+        $this->app->afterResolving('Cmsable\Widgets\Contracts\Registry', function($reg, $app){
+            $this->registerWidgets($reg);
+        });
+
     }
 
     protected function registerValidatorNamespace()
@@ -369,6 +375,11 @@ class PackageServiceProvider extends ServiceProvider
         $this->app->singleton('Ems\App\Contracts\Mail\SystemMailConfigRepository', function(){
             return $this->app['Ems\App\Repositories\MailConfigRepository'];
         });
+    }
+
+    protected function registerWidgets(WidgetRegistry $registry)
+    {
+        $registry->set('cmsable.widgets.image-box', 'Ems\App\Widgets\ImageBoxWidget');
     }
 
     protected function addCKEditorRoute(&$jsConfig)

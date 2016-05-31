@@ -7,7 +7,7 @@
             <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?></label>
         <? endif ?>
         <br/>
-        <div class="image-field-placeholder" style="cursor: pointer;"><img style="max-height: 100px;" src="<? if($item->value): ?><?= App::make('filedb.model')->getById($item->value)->url ?><? else: ?>/cmsable/img/no-img.png<? endif; ?>"/><br/>
+        <div class="image-field-placeholder" style="cursor: pointer;"><img style="max-height: 100px;" src="<? if($item->value): ?><?= App::make('filedb.model')->getById($item->value)->url ?><? else: ?>/cmsable/img/no-img.png<? endif; ?>" <? if($item->isInlineJsEnabled()): ?> onclick="window.lastClickedImageField = jQuery(this).closest('div.image-field-placeholder');window.open(window.fileroute + '?type=image&amp;context=image-field','filemanager','height=500,width=768,scrollbars=yes,toolbar=no');" <? endif ?>/><br/>
             <input <?= $item->attributes ?>/>
         </div>
         <? if($item->description): ?>

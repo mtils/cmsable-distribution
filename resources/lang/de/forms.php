@@ -79,6 +79,11 @@ return [
     'shout-out-box' => [
         'shout' => ['title' => 'Ausruf'],
         'link' => ['title'  => 'Link Adresse']
+    ],
+    'image-box' => [
+        'image_id' => ['title' => 'Bild'],
+        'link'     => ['title'  => 'Link'],
+        'caption'  => ['title'  => 'Beschreibung'],
     ]
 
 ];
