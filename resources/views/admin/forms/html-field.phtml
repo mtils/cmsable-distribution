@@ -1,0 +1,11 @@
+    <? include(__DIR__.'/field.phtml') ?>
+    <? if($item->isInlineJsEnabled()): ?>
+    <script>
+        jQuery('textarea.html.<?= $item->name ?>').ckeditor({
+            customConfig: '/cmsable/js/ckconfig.js',
+            toolbar: 'Full',
+            contentsCss: window.cmsEditorCss,
+            extraPlugins: 'stylesheetparser'
+        });
+    </script>
+    <? endif ?>

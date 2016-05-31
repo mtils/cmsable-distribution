@@ -380,6 +380,7 @@ class PackageServiceProvider extends ServiceProvider
     protected function registerWidgets(WidgetRegistry $registry)
     {
         $registry->set('cmsable.widgets.image-box', 'Ems\App\Widgets\ImageBoxWidget');
+        $registry->set('cmsable.widgets.content-box', 'Ems\App\Widgets\ContentBoxWidget');
     }
 
     protected function addCKEditorRoute(&$jsConfig)

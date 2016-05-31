@@ -84,6 +84,9 @@ return [
         'image_id' => ['title' => 'Bild'],
         'link'     => ['title'  => 'Link'],
         'caption'  => ['title'  => 'Beschreibung'],
+    ],
+    'content-box' => [
+        'content' => ['title' => 'Inhalt']
     ]
 
 ];
