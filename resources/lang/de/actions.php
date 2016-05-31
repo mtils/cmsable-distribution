@@ -6,6 +6,7 @@ return [
     'actions' => 'Aktionen',
     'more'    => 'Mehr...',
     'cancel'  => 'Abbrechen',
+    'save-changes' => 'Änderungen speichern',
     'download-searchresult'    => 'Gesamtes Suchergebnis herunterladen',
     'resource' => [
         'edit' => 'bearbeiten'

@@ -6,16 +6,12 @@
     $modalTitle = Lang::get('ems::actions.widgets.create-widget',['widgetTitle'=>$classTitle]);
     $addButtonText = Lang::get('ems::base.create-object',['class'=>$classTitle]);
     $handleParam = isset($handle) ? "?handle=$handle" : '';
+    $createUrl = URL::route('widgets.items.create', [$widget->getTypeId()]) . "?handle=$handle&input_prefix=$inputPrefix";
 ?>
 <li>
-    <? $item = $items->make($widget->getTypeId()) ?>
-    <div class="box box-default box-solid" onclick="editWidgetItem($(this).data('create-url'), '{{ $modalTitle }}')" data-create-url="{{ URL::route('widgets.items.create', [$widget->getTypeId()]) . $handleParam }}" data-editable="{{ (int)$widget->isEditable() }}" data-widget-type="{{ $widget->getTypeId() }}">
-        <div class="box-header with-border">
-            <h3 class="box-title">{{ $classTitle }}</h3>
-        </div>
-    <div class="box-body">
-    {!! $widget->renderPreview($item) !!}
-    </div>
+    <? $widgetItem = $items->make($widget->getTypeId()) ?>
+    <? $hideCloseButton = true ?>
+    @include('widget-items.partials.boxed-widget-item')
 </li>
 @endforeach
 </ul>
