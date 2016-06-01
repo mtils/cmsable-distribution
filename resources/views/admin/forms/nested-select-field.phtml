@@ -5,6 +5,9 @@
         <? endif ?>
         <? if($item->className == 'NestedSelectField'): ?>
             <select <?=$item->addCssClass('form-control')->addCssClass('input-sm')->addCssClass('selectpicker')->attributes->set('data-live-search','true')?>>
+            <? if($item->hasNullEntry()): ?>
+            <option value="<?= $item->nullEntry['value'] ?>"><?= $item->nullEntry['name'] ?></option>
+            <? endif ?>
             <? if($item->hasGroups()): ?>
             <? foreach($item->getGrouped() as $group=>$options): ?>
                 <optgroup label="<?= $group ?>">
