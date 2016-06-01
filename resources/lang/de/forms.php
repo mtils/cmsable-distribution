@@ -86,7 +86,13 @@ return [
         'caption'  => ['title'  => 'Beschreibung'],
     ],
     'content-box' => [
-        'content' => ['title' => 'Inhalt']
+        'content' => ['title' => 'Inhalt'],
+        'css_class' => ['title' => 'Darstellung']
+    ],
+    'link-widget' => [
+        'link' => ['title' => 'Zu dieser Seite verlinken'],
+        'text' => ['title' => 'Manueller Text des Links',
+                   'description' => 'Lassen Sie dies leer um den Menütitel als Text zu benutzen']
     ]
 
 ];

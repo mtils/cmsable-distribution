@@ -14,13 +14,15 @@ use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use FileDB\Model\FileDBModelInterface as FileDB;
 use Ems\App\Http\Forms\Fields\NestedSelectField;
 use Cmsable\Model\SiteTreeModelInterface;
+use Cmsable\Widgets\AbstractWidget;
 use Files;
-
+use URL;
+use Lang;
 
 /**
  * This is a very simple widget which shows an image
  **/
-class ImageBoxWidget implements Widget
+class ImageBoxWidget extends AbstractWidget
 {
 
     public static $typeId = 'cmsable.widgets.image-box';
@@ -49,27 +51,11 @@ class ImageBoxWidget implements Widget
     /**
      * {@inheritdoc}
      *
-     * @return string
+     * @return array
      **/
-    public function getTypeId()
+    public function rules()
     {
-        return static::$typeId;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param array
-     * @return bool
-     * @throws \Illuminate\Contracts\Validation\ValidationException
-     **/
-    public function validate(array $data)
-    {
-        $validator = $this->validationFactory->make($data, $this->rules);
-        if ($validator->passes()) {
-            return true;
-        }
-        throw new ValidationException($validator);
+        return $this->rules;
     }
 
     /**
@@ -85,58 +71,6 @@ class ImageBoxWidget implements Widget
     /**
      * {@inheritdoc}
      *
-     * @return string
-     **/
-    public function category()
-    {
-        return 'banners';
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return int
-     **/
-    public function getMaxColumnSpan()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return int
-     **/
-    public function getMaxRowSpan()
-    {
-        return 2;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     **/
-    public function isEditable()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param string $pageTypeId
-     * @param string $areaName
-     * @return bool
-     **/
-    public function isAllowedOn($pageTypeId, $areaName=AreaRepository::CONTENT)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
      * @param \Cmsable\Widgets\Contracts\WidgetItem $item
      * @return string
      **/
@@ -144,13 +78,17 @@ class ImageBoxWidget implements Widget
     {
         $data = $item->getData();
 
-        if (!isset($data['image_id']) || !$data['image_id']) {
-            $imageUrl = '/cmsable/img/no-img.png';
-        } elseif($file = $this->fileDB->getById($data['image_id'])) {
-            $imageUrl = $file->url;
+        $imageUrl = $this->getImageUrl($item);
+
+        if (!$link = $this->renderLink($item, $imageUrl)) {
+            return $this->renderPreview($item);
         }
 
-        return "<img class=\"image-box\" src=\"$imageUrl\" />";
+        if (!isset($data['caption']) || !$data['caption']) {
+            return $link . $this->renderPreview($item) . '</a>';
+        }
+
+        return "$link<figure>". $this->renderPreview($item) . "<figcaption>{$data['caption']}</figcaption></figure></a>";
     }
 
     /**
@@ -161,7 +99,7 @@ class ImageBoxWidget implements Widget
      **/
     public function renderPreview(WidgetItem $item)
     {
-        return $this->render($item);
+        return $this->renderImageTag($this->getImageUrl($item));
     }
 
     /**
@@ -181,17 +119,58 @@ class ImageBoxWidget implements Widget
 
         $siteTreeSelect = NestedSelectField::create('link');
         $siteTreeSelect->setModel($this->siteTree)
-                       ->setSrc([], new Extractor('id','menu_title'));
+                       ->setSrc([], new Extractor('id','menu_title'))
+                       ->nullEntry(Lang::get($this->trKey('link-no-page','ems::')),'0');
         $form->push($siteTreeSelect);
         $form->fillByArray($item->getData());
 
-        $imageField->setAttribute('onlick','console.log(9)');
-        
         return (string)$form;
     }
 
-    protected function trKey($key, $namespace='')
+    protected function renderLink(WidgetItem $item, $imageUrl)
     {
-        return $namespace . 'widgets.' . str_replace('.','/',$this->getTypeId()) . ".$key";
+        $data = $item->getData();
+
+        if (!$data['link']) {
+            return $this->renderLightBoxLink($item, $imageUrl);
+        }
+
+        if (!is_numeric($data['link'])) {
+            return $this->renderLightBoxLink($item, $imageUrl);
+        }
+
+        if (!$page = $this->siteTree->pageById($data['link'])) {
+            return $this->renderLightBoxLink($item, $imageUrl);
+        }
+
+        return '<a href="' . URL::to($page) . '">';
+
     }
+
+    protected function renderImageTag($imageUrl)
+    {
+        return "<img class=\"image-box\" src=\"$imageUrl\" />";
+    }
+
+    protected function getImageUrl(WidgetItem $item)
+    {
+
+        $data = $item->getData();
+
+        if (!isset($data['image_id']) || !$data['image_id']) {
+            return '/cmsable/img/no-img.png';
+        }
+
+        if($file = $this->fileDB->getById($data['image_id'])) {
+            return $file->url;
+        }
+
+        return '/cmsable/img/no-img.png';
+    }
+
+    protected function renderLightBoxLink(WidgetItem $item, $imageUrl)
+    {
+        return '<a href="javascript: return false;" data-href="' . $imageUrl . '" data-lightbox="sidebar-images">';
+    }
+
 }

@@ -16,12 +16,13 @@ use FileDB\Model\FileDBModelInterface as FileDB;
 use Ems\App\Http\Forms\Fields\NestedSelectField;
 use Cmsable\Model\SiteTreeModelInterface;
 use Files;
+use Cmsable\Widgets\AbstractWidget;
 
 
 /**
  * This is a very simple widget which shows one Sentence in a box
  **/
-class ContentBoxWidget implements Widget
+class ContentBoxWidget extends AbstractWidget
 {
 
     public static $typeId = 'cmsable.widgets.content-box';
@@ -32,15 +33,15 @@ class ContentBoxWidget implements Widget
     protected $lang;
 
     protected $rules = [
-        'content' => 'required|min:2'
+        'content' => 'required|min:2',
+        'css_class' => ''
     ];
 
-    protected $validationFactory;
+    protected $cssClasses = [];
 
-    public function __construct(ValidationFactory $validationFactory, Translator $translator,
+    public function __construct(Translator $translator,
                                 SiteTreeModelInterface $siteTree)
     {
-        $this->validationFactory = $validationFactory;
         $this->lang = $translator;
         $this->siteTree = $siteTree;
     }
@@ -48,27 +49,11 @@ class ContentBoxWidget implements Widget
     /**
      * {@inheritdoc}
      *
-     * @return string
+     * @return array
      **/
-    public function getTypeId()
+    public function rules()
     {
-        return static::$typeId;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param array
-     * @return bool
-     * @throws \Illuminate\Contracts\Validation\ValidationException
-     **/
-    public function validate(array $data)
-    {
-        $validator = $this->validationFactory->make($data, $this->rules);
-        if ($validator->passes()) {
-            return true;
-        }
-        throw new ValidationException($validator);
+        return $this->rules;
     }
 
     /**
@@ -84,53 +69,14 @@ class ContentBoxWidget implements Widget
     /**
      * {@inheritdoc}
      *
-     * @return string
+     * @param \Cmsable\Widgets\Contracts\WidgetItem $item
      **/
-    public function category()
-    {
-        return 'banners';
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return int
-     **/
-    public function getMaxColumnSpan()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return int
-     **/
-    public function getMaxRowSpan()
-    {
-        return 2;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     **/
-    public function isEditable()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param string $pageTypeId
-     * @param string $areaName
-     * @return bool
-     **/
-    public function isAllowedOn($pageTypeId, $areaName=AreaRepository::CONTENT)
-    {
-        return true;
+    public function configure(WidgetItem $item) {
+        $data = $item->getData();
+        if (!isset($data['css_class']) || !$data['css_class']) {
+            return;
+        }
+        $item->cssClasses()->append($data['css_class']);
     }
 
     /**
@@ -168,13 +114,26 @@ class ContentBoxWidget implements Widget
     public function renderForm(WidgetItem $item, $params=[])
     {
         $form = Form::create('content-box');
+
+        if ($this->cssClasses) {
+            $form->push(Form::selectOne('css_class')->setSrc($this->cssClasses));
+        }
+
         $form->push(Form::html('content')->enableInlineJs());
+
         $form->fillByArray($item->getData());
         return (string)$form;
     }
 
-    protected function trKey($key, $namespace='')
+    public function getCssClasses()
     {
-        return $namespace . 'widgets.' . str_replace('.','/',$this->getTypeId()) . ".$key";
+        return $this->cssClasses;
     }
+
+    public function setCssClasses(array $classes)
+    {
+        $this->cssClasses = $classes;
+        return $this;
+    }
+
 }
