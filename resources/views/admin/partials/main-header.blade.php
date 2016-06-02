@@ -20,7 +20,7 @@
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="/cmsable/AdminLTE/img/avatar3.png" class="img-circle" alt="User Image" />
+                    <img src="{{ $currentUserAvatar or '/cmsable/img/user-128px.png' }}" class="img-circle" alt="User Image" />
                     <p>
                       {{ Scaffold::shortName(Auth::user()) }}
                       @if(Auth::user()->last_login) <small>Letzter Login {{ Auth::user()->last_login->format('d.m.Y H:i') }}</small> @endif
@@ -41,7 +41,7 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Profil</a>
+                      <a href="{{ URL::route('users.show', [Auth::user()->getAuthId()]) }}" class="btn btn-default btn-flat">Profil</a>
                     </div>
                     <div class="pull-right">
                       <a href="/session/destroy" class="btn btn-default btn-flat">Logout</a>

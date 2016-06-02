@@ -5,7 +5,7 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="/cmsable/img/user-128px.png" class="img-circle" alt="User Image" />
+              <img src="{{ $currentUserAvatar or '/cmsable/img/user-128px.png' }}" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
               <p>{{ Scaffold::shortName(Auth::user()) }}</p>
