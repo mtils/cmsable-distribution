@@ -4,6 +4,9 @@ return [
 
     'base' => [
         'field_confirmed'   => ':attribute wiederholen',
+        'tag-field'         => [
+            'title'     => 'Stichwörter'
+        ]
     ],
 
     'actions' => [
