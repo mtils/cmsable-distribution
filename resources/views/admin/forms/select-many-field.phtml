@@ -30,7 +30,7 @@
             </table>
             <? endif ?>
         <? else: ?>
-            <select <?=$item->addCssClass('form-control')->attributes->without('name')->set('multiple','multiple') ?> name="<?= $item->getName() ?>[]" ?>>
+            <select <?=$item->addCssClass('form-control')->attributes->without('name')->set('multiple','multiple') ?> name="<?= $item->getName() ?>[]">
                 <? if($item->hasGroups()): ?>
                     <? foreach($item->getGrouped() as $group=>$options): ?>
                         <optgroup label="<?= $group ?>">
