@@ -183,6 +183,18 @@ class PackageServiceProvider extends ServiceProvider
 
             $this->app['view']->getFinder()->prependLocation($adminThemePath);
 
+            if(!$appViewPath = $this->app['config']->get('view.paths')) {
+                return;
+            }
+
+            $appAdminViewPath = $appViewPath[0] . '/admin';
+
+            if (!is_dir($appAdminViewPath)) {
+                return;
+            }
+
+            $this->app['view']->getFinder()->prependLocation($appAdminViewPath);
+
         });
 
         $this->app->afterResolving('FormObject\Factory', function($factory, $app){
