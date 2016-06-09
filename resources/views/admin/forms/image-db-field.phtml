@@ -7,9 +7,19 @@
             <label class="control-label" for="<?= $item->id ?>"><?= $item->title ?></label>
         <? endif ?>
         <br/>
-        <div class="image-field-placeholder">
-            <img style="max-height: 100px; cursor: pointer;" src="<? if($item->value): ?><?= App::make('filedb.model')->getById($item->value)->url ?><? else: ?>/cmsable/img/no-img.png<? endif; ?>" <? if($item->isInlineJsEnabled()): ?> onclick="window.lastClickedImageField = jQuery(this).closest('div.image-field-placeholder');window.open(window.fileroute + '?type=image&amp;context=image-field','filemanager','height=500,width=768,scrollbars=yes,toolbar=no');" <? endif ?>/>
-            <a class="btn btn-danger" onclick="removeImage()"><i class="fa fa-times" aria-hidden="true"></i> Entfernen</a>
+        <? $defaultImage = '/cmsable/img/no-img.png' ?>
+        <div class="image-field-placeholder" data-default-img="<?= $defaultImage ?>">
+            <?
+                if ($item->value) {
+                    $imageUrl = App::make('filedb.model')->getById($item->value)->url;
+                    $hasImage = true;
+                } else {
+                    $imageUrl = $defaultImage;
+                    $hasImage = false;
+                }
+            ?>
+            <img style="max-height: 100px; cursor: pointer;" src="<?= $imageUrl ?>" onclick="selectImageForImageDbField(jQuery(this).closest('div.image-field-placeholder')); return false;" />
+            <a class="btn btn-danger remove"<?= $hasImage ? '' : 'style="display: none"' ?> onclick="removeImageFromImageDbField(jQuery(this).closest('div.image-field-placeholder'))"><i class="fa fa-times" aria-hidden="true"></i></a>
             <br/>
             <input <?= $item->attributes ?>/>
         </div>
