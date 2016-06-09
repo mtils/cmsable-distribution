@@ -1,5 +1,5 @@
 @extends('layouts.col-1')
 
 @section('inner-content')
-<? print_r($model->toArray()) ?>
+@include('partials.generated-detail-view')
 @stop

@@ -1,5 +1,6 @@
     <? $filterActions = isset($filterActions) ? $filterActions : false; ?>
     <? $context = isset($context) ? $context : 'default' ?>
+    <? $fileInterface = 'FileDB\Model\FileInterface' ?>
     <table class="table table-bordered table-striped {{ $collection->cssClasses }}">
         <tr>
             @foreach($collection->columns as $col)
@@ -10,7 +11,12 @@
     @foreach($collection as $row)
         <tr>
             @foreach($collection->columns as $col)
-            <td>{{ $col->value }}</td>
+            <? $value = $col->value ?>
+            @if($value instanceof FileDB\Model\FileInterface)
+            <td><img src="{{ $value->getUrl() }}" style="width: 100px; height: auto;"/></td>
+            @else
+            <td>{{ $value }}</td>
+            @endif
             @endforeach
             <td>
             <? $actions = $filterActions ? Actions::forItem($row)->filtered($filterActions) : Actions::forItem($row) ?>
