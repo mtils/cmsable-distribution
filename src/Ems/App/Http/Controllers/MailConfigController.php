@@ -9,6 +9,7 @@ use Ems\App\Helpers\ProvidesTexts;
 use Cmsable\Resource\Contracts\Mapper;
 use Cmsable\View\Contracts\Notifier;
 use Versatile\Query\Builder;
+use Ems\App\Http\Forms\SystemMailConfigForm;
 use App\Group;
 use Menu;
 use URL;
@@ -79,12 +80,13 @@ class MailConfigController extends Controller
         return redirect()->route('groups.edit',[$group->getKey()]);
     }
 
-    public function edit($id)
+    public function edit(SystemMailConfigForm $form, $id)
     {
         $config = $this->repository->find($id);
         return view('mail-configurations.edit-tree', [
             'model'     => $config,
-            'editUrl'   => $this->getEditUrl()
+            'editUrl'   => $this->getEditUrl(),
+            'form'      => $form
         ]);
     }
 
