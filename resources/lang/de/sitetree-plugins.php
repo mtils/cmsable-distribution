@@ -19,6 +19,9 @@ return [
         'single_recipient'              => ['title'=>'Empfänger'],
         'topic'                         => ['title'=>'Thema'],
         'recipient'                     => ['title'=>'Empfänger Email-Adresse'],
+    ],
+    'testimonials-page' => [
+        'filter_tags_ids' => ['title'=>'Referenzen mit diesen Stichwörtern anzeigen']
     ]
 
 ];
