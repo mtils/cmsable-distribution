@@ -4,6 +4,7 @@
     <link href="/cmsable/css/sitetree.css" rel="stylesheet" type="text/css" />
 @stop
 @section('content')
+    @include('partials.bootstrap-modal')
     @if(isset($title) && $title)
         <h2 class="page-header text-right">{{ $title }}</h2>
     @endif
