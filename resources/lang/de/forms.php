@@ -17,6 +17,9 @@ return [
         'submit'            => ['title'=>'Absenden'],
         'search'            => ['title'=>'Suchen'],
         'login'             => ['title'=>'Anmelden'],
+        'preview'           => ['title'=>'Vorschau'],
+        'close'             => ['title'=>'Schließen'],
+        'abort'             => ['title'=>'Abbrechen'],
     ],
 
     'user' => [
@@ -96,6 +99,13 @@ return [
         'link' => ['title' => 'Zu dieser Seite verlinken'],
         'text' => ['title' => 'Manueller Text des Links',
                    'description' => 'Lassen Sie dies leer um den Menütitel als Text zu benutzen']
+    ],
+    'system-mail-config' => [
+        'name'     => ['title' => 'Name'],
+        'template' => ['title' => 'E-Mail Vorlage',
+                       'description' => 'Die Vorlage bestimmt das Design der Mail'],
+        'content__subject' => ['title' => 'Betreff'],
+        'content__body'    => ['title' => 'Inhalt']
     ]
 
 ];

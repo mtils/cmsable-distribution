@@ -71,26 +71,6 @@ class MailConfig extends WholeOrderedTreeModel implements ConfigContract, MailCo
     /**
      * {@inheritdoc}
      *
-     * @return \Ems\Contracts\Mail\MailConfig
-     **/
-    public function parent()
-    {
-        return $this->parentNode();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return \Traversable|array[\Ems\Contracts\Mail\MailConfig]
-     **\
-    public function children()
-    {
-        return $this->childNodes();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
      * @return \Ems\Contracts\Mail\RecipientList
      **/
     public function recipientList()
@@ -115,7 +95,7 @@ class MailConfig extends WholeOrderedTreeModel implements ConfigContract, MailCo
      **/
     public function data()
     {
-        return $this->data;
+        return $this->data ? $this->data : [];
     }
 
     /**
@@ -156,13 +136,21 @@ class MailConfig extends WholeOrderedTreeModel implements ConfigContract, MailCo
      * {@inheritdoc}
      *
      * @param string $resourceName
-     * @param \DateTime $plannedSendDate (optional)
+     * @param mixed $resourceId (optional)
      * @return \Ems\Contracts\Mail\MailConfig
      **/
-    public function configFor($resourceName, DateTime $plannedSendDate=null)
+    public function configFor($resourceName, $resourceId=null)
     {
-        return static::where('resource_name', $resourceName)->first();
+        $query = static::where('resource_name', $resourceName);
+        if (!$resourceId) {
+            return $query->first();
+        }
+
+        return $query->where('foreign_id', $resourceId)->first();
+
     }
+
+
 
     public function getDataAttribute()
     {

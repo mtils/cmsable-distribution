@@ -1,6 +1,7 @@
 <?php namespace Ems\App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Container\Container;
 use App\Http\Controllers\Controller;
 use Ems\App\Repositories\MailConfigRepository;
 use Cmsable\Http\Resource\CleanedRequest;
@@ -10,6 +11,11 @@ use Cmsable\Resource\Contracts\Mapper;
 use Cmsable\View\Contracts\Notifier;
 use Versatile\Query\Builder;
 use Ems\App\Http\Forms\SystemMailConfigForm;
+use Ems\App\Contracts\Mail\EmailingPreviewer;
+use Ems\Contracts\Mail\MailConfig;
+use Versatile\Search\Contracts\Search;
+use Ems\Contracts\Mail\AddressExtractor;
+use Ems\Contracts\Mail\Mailer;
 use App\Group;
 use Menu;
 use URL;
@@ -21,6 +27,11 @@ class MailConfigController extends Controller
 
     protected $repository;
 
+    /**
+     * @var \Ems\Contracts\Mail\AddressExtractor
+     **/
+    protected $addressExtractor;
+
     protected $searchColumns = [
         'id', 'name'
     ];
@@ -30,10 +41,11 @@ class MailConfigController extends Controller
      **/
     protected $redirectToTree = 0;
 
-    public function __construct(MailConfigRepository $repository, Notifier $notifier)
+    public function __construct(MailConfigRepository $repository, Notifier $notifier, AddressExtractor $addressExtractor)
     {
         $this->repository = $repository;
         $this->notifier = $notifier;
+        $this->addressExtractor = $addressExtractor;
 
         $this->middleware('auth');
     }
@@ -43,11 +55,11 @@ class MailConfigController extends Controller
         return $this->repository->find($id);
     }
 
-    public function index(Request $request)
+    public function index(Container $app, Request $request)
     {
 
         if ($this->redirectToTree) {
-            return $this->edit($this->redirectToTree);
+            return $app->call([$this,'edit'], [$this->redirectToTree]);
         }
 
         $search = new Builder($this->repository->make());
@@ -77,12 +89,13 @@ class MailConfigController extends Controller
     {
         $group = $this->repository->store($request->cleaned());
         $this->notifier->success($this->routeMessage('stored'));
-        return redirect()->route('groups.edit',[$group->getKey()]);
+        return redirect()->route('mail-configurations.edit',[$group->getKey()]);
     }
 
     public function edit(SystemMailConfigForm $form, $id)
     {
         $config = $this->repository->find($id);
+        $form->setModel($config);
         return view('mail-configurations.edit-tree', [
             'model'     => $config,
             'editUrl'   => $this->getEditUrl(),
@@ -95,7 +108,7 @@ class MailConfigController extends Controller
         $user = $this->repository->find($id);
         $this->repository->update($user, $request->cleaned());
         $this->notifier->success($this->routeMessage('updated'));
-        return redirect()->route('groups.edit',[$id]);
+        return redirect()->route('mail-configurations.edit',[$id]);
     }
 
     public function destroy($id)
@@ -111,6 +124,53 @@ class MailConfigController extends Controller
         $this->notifier->success($this->routeMessage('destroyed'));
 
         return 'OK';
+    }
+
+    public function previewMailing(EmailingPreviewer $previews, $id)
+    {
+        $config = $this->repository->find($id);
+
+        $search = $previews->recipientSearch($config);
+
+        $paginator = $this->getPreviewPaginator($search);
+
+        $message = $this->buildPreviewMessage($previews, $config, $paginator);
+
+        $vars = [
+            'paginator' => $paginator,
+            'message'   => $message,
+            'config'    => $config,
+            'previewRecipient' => $this->getPreviewMailRecipient()
+        ];
+
+        return view('mail-configurations.preview-emailing', $vars);
+
+    }
+
+    public function sendPreviewMailing(Mailer $mailer, EmailingPreviewer $previews, Request $request, $configId, $indexInResult)
+    {
+        // TODO: Dirty hack to manipulate the paginators current page
+        $request->request->set('page', $indexInResult);
+
+        $config = $this->repository->find($configId);
+
+        $search = $previews->recipientSearch($config);
+
+        $paginator = $this->getPreviewPaginator($search);
+
+        $message = $this->buildPreviewMessage($previews, $config, $paginator);
+
+        $message->clearRecipientHeaders();
+
+        $message->to($this->getPreviewMailRecipient());
+
+        $result = $mailer->sendMessage($message);
+
+        if (count($result)) {
+            return 'OK';
+        }
+
+        throw new \RuntimeException("Mail could not be sent to " . $this->getPreviewMailRecipient());
     }
 
     /**
@@ -136,6 +196,17 @@ class MailConfigController extends Controller
         return $this->redirectToTree;
     }
 
+    protected function getPreviewPaginator(Search $search)
+    {
+        return $search->paginate([], 1);
+    }
+
+    protected function buildPreviewMessage(EmailingPreviewer $previews, MailConfig $config, $paginator)
+    {
+        $recipient = $paginator->isEmpty() ? null : $paginator[0];
+        return $previews->previewMessage($config, $recipient);
+    }
+
     protected function getEditUrl()
     {
         if (!$current = Menu::current()) {
@@ -145,6 +216,11 @@ class MailConfigController extends Controller
             return Url::route('mail-configurations.index');
         }
         return URL::to($current);
+    }
+
+    protected function getPreviewMailRecipient()
+    {
+        return $this->addressExtractor->email(\Auth::user());
     }
 
 }

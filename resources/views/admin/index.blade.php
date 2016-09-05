@@ -20,6 +20,8 @@
     <link href="/cmsable/AdminLTE/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <!-- iCheck -->
     <link rel="stylesheet" href="/cmsable/plugins/iCheck/square/blue.css">
+    <!-- jquery.contextMenu -->
+    <link rel="stylesheet" href="/cmsable/js/contextmenu/jquery.contextMenu.min.css">
 
     <!-- AdminLTE Skins. Choose a skin from the css/skins 
          folder instead of downloading all of them to reduce the load. -->
@@ -38,6 +40,7 @@
   @section('body')
   <body class="skin-blue">
     <!-- Site wrapper -->
+    @section('wrapper')
     <div class="wrapper">
       @include('partials.main-header')
 
@@ -76,6 +79,7 @@
         <strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.
       </footer -->
     </div><!-- ./wrapper -->
+    @show <!-- section('wrapper') -->
     @section('js')
     <!-- jQuery 2.1.3 -->
     <script src="{{ URL::route('files.js-config') }}"></script>
@@ -93,6 +97,8 @@
     <script src='/cmsable/plugins/fastclick/fastclick.min.js'></script>
     <!-- jquery.fileDownload -->
     <script src='/cmsable/js/fileDownload/jquery.fileDownload.js'></script>
+    <!-- jquery.contextMenu.js -->
+    <script src='/cmsable/js/contextmenu/jquery.contextMenu.min.js'></script>
     <!-- html5sortable -->
     <!-- script src='/cmsable/js/html5sortable/html.sortable.min.js'></script -->
     <!-- AdminLTE App -->

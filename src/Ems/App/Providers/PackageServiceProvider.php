@@ -8,6 +8,8 @@ use Ems\App\Http\Route\TreeResourceRegistrar;
 use Ems\App\Search\Criteria;
 use Ems\App\Repositories\MailConfigRepository;
 use Cmsable\Widgets\Contracts\Registry as WidgetRegistry;
+use Ems\App\Http\Forms\SystemMailConfigForm;
+use Ems\Core\GenericResourceProvider;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -45,13 +47,12 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerCmsAccessFilter();
 
-        $this->registerSystemUserIdFinder();
-
     }
 
     public function register()
     {
 
+        $this->registerDefaultTextParser();
         $this->registerAutoBreadCrumbProvider();
         $this->registerValidatorNamespace();
         $this->registerFormNamespace();
@@ -60,12 +61,27 @@ class PackageServiceProvider extends ServiceProvider
         $this->registerAutocompleteMorpher();
         $this->registerCsvMorpher();
         $this->registerSystemAccessChecker();
-        $this->registerMailConfigRepository();
+        $this->registerGenericResourceProvider();
+        $this->registerTextProvider();
+        $this->registerVariablesProvider();
 
         $this->app->afterResolving('Cmsable\Widgets\Contracts\Registry', function($reg, $app){
             $this->registerWidgets($reg);
         });
 
+    }
+
+    protected function registerDefaultTextParser()
+    {
+        $this->app->singleton('Ems\Contracts\Core\TextParser', function ($app) {
+
+            $queue = $app->make('Ems\Core\TextParserQueue');
+
+            $queue->add($app->make('Ems\Core\VariablesTextParser'));
+
+            return $queue;
+
+        });
     }
 
     protected function registerValidatorNamespace()
@@ -360,19 +376,6 @@ class PackageServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerSystemUserIdFinder()
-    {
-
-        $this->app->afterResolving('Ems\App\Repositories\MailConfigRepository', function($repo){
-            $repo->provideSystemUserId(function(){
-                $user = $this->app['auth.driver']->getProvider()
-                             ->retrieveByCredentials(['email'=>'system@local.com']);
-                return $user->id;
-            });
-        });
-
-    }
-
     protected function registerSystemAccessChecker()
     {
         $this->app->resolving('Permit\Access\CheckerChain', function($chain) {
@@ -382,11 +385,32 @@ class PackageServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerMailConfigRepository()
+    protected function registerGenericResourceProvider()
     {
-        $this->app->singleton('Ems\App\Contracts\Mail\SystemMailConfigRepository', function(){
-            return $this->app['Ems\App\Repositories\MailConfigRepository'];
+        $this->app->afterResolving('Ems\Core\GenericResourceProvider', function($texts, $app) {
+            $texts->replaceInKeys('.', '/');
         });
+    }
+
+    protected function registerTextProvider()
+    {
+        $this->app->singleton('Ems\Contracts\Core\TextProvider', function($app) {
+            return $app->make('Ems\Core\Laravel\TranslatorTextProvider');
+        });
+    }
+
+    protected function registerVariablesProvider()
+    {
+        $this->app->singleton('Ems\App\Contracts\Cms\VariableProvider', function($app) {
+            return $app->make('Ems\App\Cms\VariableProviderQueue');
+        });
+
+        $this->app->afterResolving('Ems\App\Cms\AbstractVariableProvider', function($varProvider, $app) {
+            $varProvider->setPresenter($app['Versatile\View\Contracts\ModelPresenter']);
+            $varProvider->setTitleIntrospector($app['Versatile\Introspection\Contracts\TitleIntrospector']);
+            $varProvider->setTextProvider($app['Ems\Contracts\Core\TextProvider']);
+        });
+
     }
 
     protected function registerWidgets(WidgetRegistry $registry)

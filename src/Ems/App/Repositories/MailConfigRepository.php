@@ -3,12 +3,17 @@
 
 namespace Ems\App\Repositories;
 
+use DateTime;
 use Cmsable\Resource\BeeTreeRepository;
 use Ems\App\Contracts\Mail\SystemMailConfigRepository;
+use Ems\Contracts\Mail\MailConfigProvider;
+use Ems\Core\ResourceNotFoundException;
 use Ems\App\MailConfig;
+use Ems\App\MailContent;
+use Permit\CurrentUser\ContainerInterface as Auth;
 
 
-class MailConfigRepository extends BeeTreeRepository implements SystemMailConfigRepository
+class MailConfigRepository extends BeeTreeRepository implements SystemMailConfigRepository, MailConfigProvider
 {
 
     /**
@@ -21,7 +26,17 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
      **/
     protected $systemUserId;
 
+    /**
+     * @var \Permit\CurrentUser\ContainerInterface
+     **/
+    protected $auth;
+
     protected $filterAttributes = true;
+
+    public function __construct(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
 
     public function getModel()
     {
@@ -88,9 +103,10 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
      * {@inheritdoc}
      *
      * @param string $resourceName
-     * @param int $id (optional)
+     * @param mixed $resourceId (optional)
+     * @return \Ems\Contracts\Mail\MailConfig
      **/
-    public function configForResource($resourceName, $id=null)
+    public function configFor($resourceName, $resourceId=null)
     {
         $all = $this->model()->newQuery()
                     ->where('resource_name', $resourceName)
@@ -102,7 +118,7 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
 
         foreach ($all as $config) {
             if ($config) {
-                if ($config->foreign_id == $id) {
+                if ($config->foreign_id == $resourceId) {
                     $idHit = $config;
                 }
                 if (!$config->foreign_id) {
@@ -111,7 +127,13 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
             }
         }
 
-        return $idHit ? $idHit : $nullHit;
+        $result = $idHit ? $idHit : $nullHit;
+
+        if ($result) {
+            return $result;
+        }
+
+        throw new ResourceNotFoundException("No config found for '$resourceName' and id '$resourceId'");
     }
 
     /**
@@ -123,10 +145,10 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
      **/
     public function findOrCreate($resourceName, array $attributes, $id=null)
     {
-        if ($config = $this->configForResource($resourceName, $id)) {
+        if ($config = $this->configFor($resourceName, $id)) {
             return $config;
         }
-//         dd($this->passedToCreateAttributes($attributes, $id));
+
         $this->model()->unguard(true);
 
         $parent = isset($attributes['parent']) ? $attributes['parent'] : $this->find(MailConfig::SYSTEM);
@@ -164,9 +186,20 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
 
     protected function syncRelated($model, array $attributes)
     {
-        if (isset($attributes['services']) && is_array($attributes['services'])) {
-            $model->services()->sync($attributes['services']);
+
+        if (isset($attributes['content']) && is_array($attributes['content'])) {
+            $this->syncContents($model, $attributes['content']);
         }
+    }
+
+    protected function syncContents($model, $attributes)
+    {
+        if (!$contents = MailContent::where('mail_configuration_id', $model->getId())->first()) {
+            $contents = new MailContent(['mail_configuration_id'=>$model->getId()]);
+        }
+        $attributes['owner_id'] = $this->auth->user()->getAuthId();
+        $contents->fill($attributes);
+        $contents->save();
     }
 
     protected function createDefaultConfigurations()

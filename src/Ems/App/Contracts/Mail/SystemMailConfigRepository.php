@@ -7,17 +7,6 @@ interface SystemMailConfigRepository
 {
 
     /**
-     * Find a mail config for $resourceName. If an id is passed find one
-     * which was explicitly saved for this $resourceName and the passed id
-     * If no one with the id was found, return the config which was not
-     * explicitly set for this id
-     *
-     * @param string $resourceName
-     * @param int $id (optional)
-     **/
-    public function configForResource($resourceName, $id=null);
-
-    /**
      * Find config for $resourceName. If non is found, create one with the
      * attributes under $attributes.
      * Optional pass an id to store different config objects for different ids
