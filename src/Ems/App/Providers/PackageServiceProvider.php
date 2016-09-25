@@ -18,6 +18,10 @@ class PackageServiceProvider extends ServiceProvider
 
     protected $packagePath = '';
 
+    protected $publicDir = '';
+
+    protected $assetNamespace = 'cmsable';
+
     public function boot()
     {
 
@@ -47,6 +51,10 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerCmsAccessFilter();
 
+        $this->publishes([
+            $this->resourcePath('assets/public') => public_path($this->publicDir)
+        ], 'public');
+
     }
 
     public function register()
@@ -68,6 +76,18 @@ class PackageServiceProvider extends ServiceProvider
         $this->app->afterResolving('Cmsable\Widgets\Contracts\Registry', function($reg, $app){
             $this->registerWidgets($reg);
         });
+
+        $this->app->afterResolving('Ems\Contracts\Assets\Registry', function ($registry, $app) {
+            $this->registerAssetPaths($registry);
+        });
+
+        $this->app->resolving('Ems\Contracts\Assets\BuildConfigRepository', function ($repo, $app) {
+            $this->registerAssetBuilds($repo);
+        });
+
+        $this->publicDir = 'vendor/'.$this->assetNamespace;
+
+        $this->registerAssetGroupPrefix();
 
     }
 
@@ -422,6 +442,49 @@ class PackageServiceProvider extends ServiceProvider
     protected function addCKEditorRoute(&$jsConfig)
     {
         $jsConfig['window.fileroute'] = $this->app['url']->route('files.index');
+    }
+
+    protected function registerAssetPaths($registry)
+    {
+        $assetPath = public_path($this->publicDir);
+        $registry->map($this->assetNamespace.'.css', $assetPath, url($this->publicDir));
+        $registry->map($this->assetNamespace.'.js', $assetPath, url($this->publicDir));
+    }
+
+    protected function registerAssetBuilds($repo)
+    {
+
+        $repo->store([
+            'group' => $this->assetNamespace . '.js',
+            'target' => 'js/cmsable.js',
+            'parsers' => 'patchwork/jsqueeze',
+            'files' => [
+                'plugins/jQuery/jQuery-2.1.3.min.js',
+                'plugins/jQueryUI/jquery-ui-1.11.4.min.js',
+                'bootstrap/js/bootstrap.min.js'
+            ],
+            'managerOptions' => ['check_compiled_file_exists'=>false]
+        ]);
+
+        $repo->store([
+            'group' => $this->assetNamespace . '.css',
+            'target' => 'css/cmsable.css',
+            'parsers' => 'cssmin/cssmin',
+            'files' => [
+                'css/filemanager.css',
+                'AdminLTE/css/AdminLTE.min.css',
+                'css/admin.css',
+                'css/sitetree.css'
+            ],
+            'managerOptions' => ['check_compiled_file_exists'=>false]
+        ]);
+    }
+
+    protected function registerAssetGroupPrefix()
+    {
+        $this->app->afterResolving('Ems\Assets\Laravel\AssetsBladeDirectives', function ($directives) {
+            $directives->mapDirectoryToGroupPrefix($this->resourcePath('views/admin'), $this->assetNamespace);
+        });
     }
 
 }

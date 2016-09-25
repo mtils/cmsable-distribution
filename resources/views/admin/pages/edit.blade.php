@@ -1,8 +1,4 @@
 @extends('index')
-@section('head')
-    @parent
-    <link href="/cmsable/css/sitetree.css" rel="stylesheet" type="text/css" />
-@stop
 @section('content')
         @include('partials.bootstrap-modal')
         <div class="col-lg-3 col-md-4">
@@ -17,12 +13,18 @@
         <div class="col-lg-9 col-md-8 left-splitted">
             {!! $form !!}
         </div>
-@stop
-@section('js')
-    @parent
-    <script src="/cmsable/js/jstree/dist/jstree.min.js"></script>
-    <script src="/cmsable/js/ckeditor/ckeditor.js"></script>
-    <script src="/cmsable/js/ckeditor/adapters/jquery.js"></script>
-    <script src="{{ URL::route('sitetree.jsconfig') }}"></script>
-    <script src="/cmsable/js/sitetree.js"></script>
+<?
+
+Assets::import('css/sitetree.css', 'cmsable.css')->after('css/admin.css');
+
+Assets::import([
+    'js/jstree/dist/jstree.min.js',
+    'js/ckeditor/ckeditor.js',
+    'js/ckeditor/adapters/jquery.js',
+    URL::route('sitetree.jsconfig'),
+    'js/sitetree.js'
+],'cmsable.js')->after('js/admin.js');
+
+?>
+
 @stop

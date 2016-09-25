@@ -6,27 +6,29 @@
     @section('head')
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
-    <link href="/cmsable/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- link href="/cmsable/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" / -->
+    @asset('bootstrap/css/bootstrap.min.css')
     <!-- Font Awesome Icons -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <!-- Ionicons -->
-    <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
-    <!-- Datepicker -->
-    <link href="/cmsable/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    @asset('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
 
-    <link href="/cmsable/js/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-    <link href="/cmsable/css/filemanager.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    @asset('css/ionicons.min.css')
+    <!-- Datepicker -->
+    @asset('plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')
+
+    @asset('js/select2/css/select2.min.css')
+    @asset('css/filemanager.css')
     <!-- Theme style -->
-    <link href="/cmsable/AdminLTE/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    @asset('AdminLTE/css/AdminLTE.min.css')
     <!-- iCheck -->
-    <link rel="stylesheet" href="/cmsable/plugins/iCheck/square/blue.css">
+    @asset('plugins/iCheck/square/blue.css')
     <!-- jquery.contextMenu -->
-    <link rel="stylesheet" href="/cmsable/js/contextmenu/jquery.contextMenu.min.css">
+    @asset('js/contextmenu/jquery.contextMenu.min.css')
 
     <!-- AdminLTE Skins. Choose a skin from the css/skins 
          folder instead of downloading all of them to reduce the load. -->
-    <link href="/cmsable/AdminLTE/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
-    <link href="/cmsable/css/admin.css" rel="stylesheet" type="text/css" />
+    @asset('AdminLTE/css/skins/_all-skins.min.css')
+    @asset('css/admin.css')
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -34,6 +36,8 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    
+    @assets('css')
     <style>{!! Render::css(); !!}</style>
     @show
   </head>
@@ -81,29 +85,22 @@
     </div><!-- ./wrapper -->
     @show <!-- section('wrapper') -->
     @section('js')
-    <!-- jQuery 2.1.3 -->
-    <script src="{{ URL::route('files.js-config') }}"></script>
-    <script src="/cmsable/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <!-- Bootstrap 3.3.2 JS -->
-    <script src="/cmsable/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <!-- SlimScroll -->
-    <script src="/cmsable/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-    <!-- SlimScroll -->
-    <script src="/cmsable/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-    <script src="/cmsable/js/select2/js/select2.full.min.js" type="text/javascript"></script>
-    <!-- FastClick -->
-    <script src='/cmsable/plugins/fastclick/fastclick.min.js'></script>
-    <!-- jquery.fileDownload -->
-    <script src='/cmsable/js/fileDownload/jquery.fileDownload.js'></script>
-    <!-- jquery.contextMenu.js -->
-    <script src='/cmsable/js/contextmenu/jquery.contextMenu.min.js'></script>
+    @asset(URL::route('files.js-config'), 'js')
+    @asset('plugins/jQuery/jQuery-2.1.3.min.js')
+    @asset('plugins/jQueryUI/jquery-ui-1.11.4.min.js')
+    @asset('bootstrap/js/bootstrap.min.js')
+    @asset('plugins/slimScroll/jquery.slimscroll.min.js')
+    @asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')
+    @asset('js/select2/js/select2.full.min.js')
+    @asset('plugins/fastclick/fastclick.min.js')
+    @asset('js/fileDownload/jquery.fileDownload.js')
+    @asset('js/contextmenu/jquery.contextMenu.min.js')
     <!-- html5sortable -->
     <!-- script src='/cmsable/js/html5sortable/html.sortable.min.js'></script -->
     <!-- AdminLTE App -->
-    <script src="/cmsable/AdminLTE/js/app.min.js" type="text/javascript"></script>
-    <script src="/cmsable/js/admin.js" type="text/javascript"></script>
+    @asset('AdminLTE/js/app.min.js')
+    @asset('js/admin.js')
+    @assets('js')
     @show
   </body>
   @show
