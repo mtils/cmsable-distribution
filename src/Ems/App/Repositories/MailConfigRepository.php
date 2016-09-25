@@ -145,9 +145,9 @@ class MailConfigRepository extends BeeTreeRepository implements SystemMailConfig
      **/
     public function findOrCreate($resourceName, array $attributes, $id=null)
     {
-        if ($config = $this->configFor($resourceName, $id)) {
-            return $config;
-        }
+        try {
+            return $this->configFor($resourceName, $id);
+        } catch(ResourceNotFoundException $e) {}
 
         $this->model()->unguard(true);
 
