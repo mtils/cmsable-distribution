@@ -2,7 +2,7 @@
 
 use RuntimeException;
 use Cmsable\Support\HoldsContainer;
-use Ems\Support\Traits\Extendable;
+use Ems\Core\Patterns\Extendable;
 use BeeTree\Contracts\Node;
 use BeeTree\Contracts\DatabaseNode;
 use BeeTree\Contracts\Repository;
