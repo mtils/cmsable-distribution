@@ -4,8 +4,12 @@
 </div>
 
 <?
-    $previousLink = "openModalIframe('" .  $paginator->previousPageUrl()  . "')";
-    $nextLink     = "openModalIframe('" .  $paginator->nextPageUrl()  . "')";
+    $clean = function ($slashedLink) {
+        return str_replace('/?','?', $slashedLink);
+    };
+
+    $previousLink = "openModalIframe('" .  $clean($paginator->previousPageUrl())  . "')";
+    $nextLink     = "openModalIframe('" .  $clean($paginator->nextPageUrl())  . "')";
     $directLink = "openModalIframe('" . URL::current() . "?page=' + $(this).val())";
     $sendUrl = URL::route('mail-configurations.preview-mailing.send', [$config->getId(), $paginator->currentPage()]);
     $successMessage = Lang::get('ems::mail.send-preview-mail.success',['recipient'=>$previewRecipient]);
