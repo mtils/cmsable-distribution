@@ -25,8 +25,8 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbar_Full = [
 //         { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Save' ] },
         { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-        { name: 'links', items: [ 'Link', 'Unlink', 'Anchor'] },
-        { name: 'insert', items: [ 'Image', 'Table', 'Variables'  ] },
+        { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+        { name: 'insert', items: [ 'Image', 'Table' ] },
         { name: 'tools', items: [ 'Maximize', 'ShowBlocks','Source' ] },
         //{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ], items: [ 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ] },
 //         { name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },

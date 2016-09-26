@@ -69,3 +69,30 @@ form .tab-content {
 .content-header .breadcrumb>li+li:before {
   color: #888;
 }
+
+.box.widget-frame .box-body:hover {
+    cursor: pointer;
+}
+
+.box.widget-frame .drag-handle:hover {
+    cursor: move;
+}
+
+.widget-item-form form button[type=submit], .widget-item-form form .box-footer {
+    display: none;
+}
+
+#overwritten-modal-footer {
+    padding-right: 0px;
+    padding-bottom: 0px;
+}
+
+.widget-item img.image-box {
+    width: 100%;
+}
+
+.image-field-placeholder a.remove {
+    margin-left: -28px;
+    margin-top: -70px;
+    padding: 0px 4px;
+}

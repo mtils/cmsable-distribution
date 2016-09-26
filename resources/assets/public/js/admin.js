@@ -116,6 +116,8 @@ assignToLastClickedImageField = function(id, url){
     if(window.lastClickedImageField){
         jQuery(window.lastClickedImageField).find('input.image-db-field').attr('value',id);
         jQuery(window.lastClickedImageField).find('img').attr('src',url);
+        jQuery(window.lastClickedImageField).find('a.remove').show();
+        console.log('ISCH');
     }
     window.lastClickedImageField = null;
 }
@@ -126,6 +128,20 @@ assignToLastClickedUploadField = function(id, name){
         jQuery(window.lastClickedUploadField).find('input.filename').attr('value', name);
     }
     window.lastClickedUploadField = null;
+}
+
+selectImageForImageDbField = function(imageFieldDiv)
+{
+    window.lastClickedImageField = imageFieldDiv;
+    window.open(window.fileroute + '?type=image&context=image-field','filemanager','height=500,width=768,scrollbars=yes,toolbar=no');
+}
+
+removeImageFromImageDbField = function(imageFieldDiv)
+{
+    jQuery(imageFieldDiv).find('input.image-db-field').attr('value','');
+    jQuery(imageFieldDiv).find('img').attr('src',jQuery(imageFieldDiv).data('default-img'));
+    jQuery(imageFieldDiv).find('a.remove').hide();
+//     window.open(window.fileroute + '?type=image&context=image-field','filemanager','height=500,width=768,scrollbars=yes,toolbar=no');
 }
 
 function formatResult (item) {
@@ -208,6 +224,177 @@ $(document).on('click','table.inline-edit a.row-add', function(event){
     return false;
 });
 
+function showModal(content, title) {
+
+    $('#inline-modal .modal-title').text(title);
+    $('#inline-modal .modal-body').html(content);
+    if ($(content).find('#overwritten-modal-footer').length) {
+        $('#original-modal-footer').hide();
+    } else {
+        $('#original-modal-footer').show();
+    }
+
+    $('#inline-modal').modal('show');
+
+}
+
+function selectWidget(ul)
+{
+
+    $ul = $(ul);
+    var url = $ul.data('select-url');
+    var modalTitle = $ul.data('modal-title');
+    var handle = $ul.data('handle');
+    var inputPrefix = $ul.data('widget-config-name');
+
+    var fullUrl = url + '?handle=' + handle + '&input_prefix=' + inputPrefix;
+
+    $.ajax({
+        url: fullUrl,
+        success: function(data, textStatus, xhr){
+            showModal(data, modalTitle);
+        }
+    }).done(function(){
+        
+    });
+}
+
+function editWidgetItem(itemDiv)
+{
+    $itemDiv = $(itemDiv);
+
+    var modalTitle = $itemDiv.data('modal-title');
+    var url = $itemDiv.data('edit-url');
+    var jsonData = $itemDiv.find('input.widget-config').val();
+    var itemId = $itemDiv.data('id');
+    var postData = JSON.parse(jsonData);
+    postData['id'] = itemId;
+    postData['input_prefix'] = $itemDiv.data('input-prefix');
+    postData['handle'] = $itemDiv.data('handle');
+    
+    console.log('adding', postData)
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: postData,
+        success: function(data, textStatus, xhr){
+            showModal(data, modalTitle);
+        }
+    });
+}
+
+function updateWidgetData(div)
+{
+
+    var $form = $($(div).find('form')[0]);
+    var formData = $form.serializeArray();
+    var nativeData = {};
+    var url = $(div).data('url');
+    var handle = $(div).data('handle');
+    var handleSelector = '#' + handle;
+    var typeId = $(div).data('type-id');
+    var itemId = $(div).data('id');
+    var widgetConfigName = $('#' + handle).data('widget-config-name');
+    var widgetConfigSelector = '.' + $('#' + handle).data('widget-config-name') + '.widget-config';
+    var inputName = widgetConfigName + '[' + itemId + ']';
+
+    for (var i in formData) {
+        nativeData[formData[i]['name']] = formData[i]['value'];
+    }
+
+    nativeData['id'] = itemId;
+    nativeData['framed'] = true;
+    nativeData['handle'] = handle;
+    nativeData['input_prefix'] = widgetConfigName;
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: nativeData,
+        success: function(data) {
+            $form.find('.form-group').removeClass('has-error');
+            nativeData['typeId'] = typeId;
+            var jsonData = JSON.stringify(nativeData);
+            var $existingBox = $(handleSelector + ' div[data-id="' + itemId +'"]');
+            if (!$existingBox.length) {
+                $('#' + handle).append('<li>' + data + '</li>');
+                reserializeWidgetListLayout(document.getElementById(handle));
+            } else {
+                $existingBox.replaceWith(data)
+            }
+            $('#inline-modal').modal('hide');
+        },
+        error: function(data){
+            var json = data.responseJSON
+            $form.find('input, textarea, select').each(function(idx){
+                if (json[this.name]) {
+                    $(this).closest('.form-group').addClass('has-error');
+                }
+            })
+
+        }
+    });
+
+}
+
+function saveWidget(div)
+{
+
+    var $form = $($(div).find('form')[0]);
+    var formData = $form.serializeArray();
+    var nativeData = {};
+    var url = $(div).data('url');
+    var handle = $(div).data('handle');
+    var handleSelector = '#' + handle;
+    var typeId = $(div).data('type-id');
+    var itemId = $(div).data('item-id');
+    var widgetConfigName = $('#' + handle).data('widget-config-name');
+    var widgetConfigSelector = '.' + $('#' + handle).data('widget-config-name') + '.widget-config';
+    var inputName = widgetConfigName + '[' + itemId + ']';
+
+    for (var i in formData) {
+        nativeData[formData[i]['name']] = formData[i]['value'];
+    }
+
+    nativeData['framed'] = true;
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: nativeData,
+        success: function(data) {
+            $form.find('.form-group').removeClass('has-error');
+            nativeData['typeId'] = typeId;
+            var jsonData = JSON.stringify(nativeData);
+
+            $('#' + handle).append('<li class="widget-item">' + data + '</li>');
+            $(widgetConfigSelector).append('<input type="hidden" name="' + inputName + '" value=\'' + jsonData + '\' />');
+            $('#inline-modal').modal('hide');
+        },
+        error: function(data){
+            var json = data.responseJSON
+            $form.find('input, textarea, select').each(function(idx){
+                if (json[this.name]) {
+                    $(this).closest('.form-group').addClass('has-error');
+                }
+            })
+
+        }
+    });
+
+}
+
+function reserializeWidgetListLayout(widgetList) {
+    var $widgetList = $(widgetList);
+    var layout = [];
+    $widgetList.find('.widget-frame').each(function(idx){
+        layout.push($(this).data('id'));
+    });
+    var handle = $widgetList.data('handle');
+    $('#' + handle + '_layout').val(JSON.stringify(layout));
+
+}
 
 $(function () {
 
@@ -251,22 +438,20 @@ $(function () {
 
 
     if(jQuery('textarea.html').length){
-        jQuery('textarea.html').each(function(){
-            $(this).ckeditor({
-                customConfig: '/cmsable/js/ckconfig.js',
-                toolbar: 'Full',
-                contentsCss: window.cmsEditorCss,
-                extraPlugins: $(this).data('variables') ? 'stylesheetparser,cmsablevariables' : 'stylesheetparser'
-            });
+        jQuery('textarea.html').ckeditor({
+            customConfig: '/cmsable/js/ckconfig.js',
+            toolbar: 'Full',
+            contentsCss: window.cmsEditorCss,
+            extraPlugins: 'stylesheetparser'
         });
     }
 
-    if(jQuery('div.image-field-placeholder').length){
-        jQuery('div.image-field-placeholder').click(function(e){
+    /* if(jQuery('div.image-field-placeholder img').length){
+        jQuery('div.image-field-placeholder img').click(function(e){
             window.lastClickedImageField = jQuery(e.target).closest('div.image-field-placeholder');
             window.open(window.fileroute + '?type=image&context=image-field','filemanager','height=500,width=768,scrollbars=yes,toolbar=no');
         });
-    }
+    } */
 
     if(jQuery('div.upload-field .choose').length){
         jQuery('div.upload-field .choose').click(function(e){
@@ -312,10 +497,30 @@ $(function () {
         });
     }
 
+    if(jQuery('button[data-widget=delete]').length){
+        jQuery('button[data-widget=delete]').click(function(e){
+            e.preventDefault();
+            var $target = $(this).closest('.widget-item');
+            $target.hide('slow', function(){ $target.remove(); });
+            return false;
+        });
+    }
+
+    $(".widget-list").sortable({
+        placeholder: "sort-highlight",
+        handle: ".drag-handle",
+        forcePlaceholderSize: true,
+        zIndex: 999999,
+        stop: function(event, ui) {
+            reserializeWidgetListLayout(this)
+        }
+    }).disableSelection();
+
     $('select[multiple]').each(function(e){
 
         var url = $(this).data('query-url');
         var paramName = $(this).data('query-param');
+        var allowNew = $(this).data('allow-new');
 
         if (url && paramName) {
 
@@ -353,6 +558,9 @@ $(function () {
                 templateSelection: formatAutocompleterSelection
             });
 
+        }
+        else if(allowNew) {
+            $(this).select2({tags:true});
         }
         else{
             $(this).select2();

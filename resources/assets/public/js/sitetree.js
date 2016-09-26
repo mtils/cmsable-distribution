@@ -58,8 +58,8 @@ $(function () {
 
     $('#page-form__menu_title').keyup(function(e){
         var val = $('#page-form__menu_title').val().toLowerCase();
-        var search =  ['ä' ,'ö' ,'ü' ,'ß' ,' ','_','&'];
-        var replace = ['ae','oe','ue','ss','-','-','and'];
+        var search =  ['ä' ,'ö' ,'ü' ,'ß' ,' ','_','&','/'];
+        var replace = ['ae','oe','ue','ss','-','-','and','-'];
         var url_segment = val.replaceArray(search, replace)
         $('#page-form__url_segment').val(url_segment);
     });
