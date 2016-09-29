@@ -1,3 +1,7 @@
+body.sidebar-collapse .hidden-when-sidebar-collapsed {
+    display: none;
+}
+
 div.form-navi {
     padding-bottom: 10px;
 }

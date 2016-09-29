@@ -1,5 +1,5 @@
     <header class="main-header">
-        <a href="/admin" class="logo"><b>CMS</b>able</a>
+        <a href="/admin" class="logo"><b>C</b><span class="hidden-when-sidebar-collapsed"><b>MS</b></span>a<span class="hidden-when-sidebar-collapsed">ble</span></a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->

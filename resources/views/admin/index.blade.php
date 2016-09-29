@@ -41,8 +41,9 @@
     <style>{!! Render::css(); !!}</style>
     @show
   </head>
+  <? $sideBarCollapsed = (isset($_COOKIE['sidebar']) && $_COOKIE['sidebar'] == 'collapsed') ?>
   @section('body')
-  <body class="skin-blue">
+  <body class="skin-blue sidebar-mini<? if($sideBarCollapsed) { echo ' sidebar-collapse'; } ?>">
     <!-- Site wrapper -->
     @section('wrapper')
     <div class="wrapper">

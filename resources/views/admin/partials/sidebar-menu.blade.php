@@ -12,7 +12,7 @@
                             @foreach($level1Children as $level2)
                             <li class="@if(Menu::isCurrent($level2)) active @endif">
                                 <a href="{{ URL::to($level2) }}" title="@guessTrans($level2->title)">
-                                    <i class="fa fa-circle-o"></i> @guessTrans($level2->menu_title)
+                                    <i class="fa fa-circle-o"></i> <span>@guessTrans($level2->menu_title)</span>
                                 </a>
                             </li>
                             @endforeach
@@ -21,7 +21,7 @@
                 @else
                     <li class="@if(Menu::isCurrent($level1)) active @endif">
                         <a href="{{ URL::to($level1) }}" title="@guessTrans($level1->title)">
-                            <i class="fa {{ $level1->icon }}"></i> @guessTrans($level1->menu_title)
+                            <i class="fa {{ $level1->icon }}"></i> <span>@guessTrans($level1->menu_title)</span>
                         </a>
                     </li>
                 @endif

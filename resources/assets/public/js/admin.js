@@ -516,6 +516,17 @@ $(function () {
         }
     }).disableSelection();
 
+    /**
+     * Save the sidebar state
+     **/
+    jQuery('body').on('expanded.pushMenu', function (event) {
+        document.cookie = 'sidebar=expanded';
+    });
+
+    jQuery('body').on('collapsed.pushMenu', function (event) {
+        document.cookie = 'sidebar=collapsed';
+    });
+
     $('select[multiple]').each(function(e){
 
         var url = $(this).data('query-url');
