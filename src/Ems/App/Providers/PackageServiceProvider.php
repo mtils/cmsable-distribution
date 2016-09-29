@@ -10,6 +10,8 @@ use Ems\App\Repositories\MailConfigRepository;
 use Cmsable\Widgets\Contracts\Registry as WidgetRegistry;
 use Ems\App\Http\Forms\SystemMailConfigForm;
 use Ems\Core\GenericResourceProvider;
+use Cmsable\Foundation\Http\CleanedRequest;
+use Ems\Core\Collections\NestedArray;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -62,6 +64,7 @@ class PackageServiceProvider extends ServiceProvider
 
         $this->registerDefaultTextParser();
         $this->registerAutoBreadCrumbProvider();
+        $this->registerCustomValidatorRules();
         $this->registerValidatorNamespace();
         $this->registerFormNamespace();
         $this->registerVersatileDateFormat();
@@ -85,9 +88,29 @@ class PackageServiceProvider extends ServiceProvider
             $this->registerAssetBuilds($repo);
         });
 
+        $this->app->afterResolving('Ems\Contracts\Core\InputCorrector', function($corrector) {
+            $this->registerInputCorrectors($corrector);
+            $corrector->setChain(['dotted', 'nested']);
+        });
+
+        $this->app->afterResolving('Ems\Contracts\Core\InputCaster', function($caster) {
+            $this->registerInputCasters($caster);
+            $caster->setChain(
+                ['no_leading_underscore', 'no_actions', 'no_confirmations', 'xtype_caster']
+            );
+        });
+
         $this->publicDir = 'vendor/'.$this->assetNamespace;
 
         $this->registerAssetGroupPrefix();
+
+        $this->app['events']->listen('router.matched', function()
+        {
+            $this->app->resolving(function(CleanedRequest $request, $app)
+            {
+                $request->setRedirector($app['Illuminate\Routing\Redirector']);
+            });
+        });
 
     }
 
@@ -101,6 +124,13 @@ class PackageServiceProvider extends ServiceProvider
 
             return $queue;
 
+        });
+    }
+    
+    protected function registerCustomValidatorRules()
+    {
+        $this->app->afterResolving('Illuminate\Contracts\Validation\Factory', function ($factory){
+            $factory->extend('local_date', 'Ems\App\Services\Validation\LokalizedRules@validateLocalDate');
         });
     }
 
@@ -478,6 +508,78 @@ class PackageServiceProvider extends ServiceProvider
             ],
             'managerOptions' => ['check_compiled_file_exists'=>false]
         ]);
+    }
+
+    protected function registerInputCorrectors($corrector)
+    {
+
+        $corrector->add('nested', function($input) {
+            return NestedArray::toNested($input, '.');
+        });
+
+        $corrector->add('dotted', function($input) {
+
+            $cleaned = [];
+            foreach ($input as $key=>$value) {
+                // form naming to dots
+                $cleaned[str_replace('__','.', $key)] = $value;
+            }
+
+            return $cleaned;
+
+        });
+
+    }
+
+    protected function registerInputCasters($caster)
+    {
+
+        $caster->add('no_leading_underscore', function($input) {
+
+            $cleaned = [];
+            foreach ($input as $key=>$value) {
+                // tokens, _method...
+                if (!starts_with($key,'_')) {
+                    $cleaned[$key] = $value;
+                }
+            }
+
+            return $cleaned;
+
+        });
+
+        $caster->add('no_actions', function($input) {
+
+            $cleaned = [];
+            foreach ($input as $key=>$value) {
+                // form actions
+                if (!str_contains($key,'-')) {
+                    $cleaned[$key] = $value;
+                }
+            }
+
+            return $cleaned;
+
+        });
+
+        $caster->add('no_confirmations', function($input) {
+
+            $cleaned = [];
+            foreach ($input as $key=>$value) {
+                // form actions
+                if (!ends_with($key, '_confirmation')) {
+                    $cleaned[$key] = $value;
+                }
+            }
+
+            return $cleaned;
+
+        });
+
+        $xtypeCaster = $this->app->make('Ems\App\Services\Casting\TypeIntrospectorCaster');
+
+        $caster->add('xtype_caster', $xtypeCaster);
+
     }
 
     protected function registerAssetGroupPrefix()

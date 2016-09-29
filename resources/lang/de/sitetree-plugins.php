@@ -22,6 +22,9 @@ return [
     ],
     'testimonials-page' => [
         'filter_tags_ids' => ['title'=>'Referenzen mit diesen Stichwörtern anzeigen']
+    ],
+    'blog-page' => [
+        'filter_tags_ids' => ['title'=>'Nur Blog Einträge mit diesen Stichwörtern anzeigen']
     ]
 
 ];
