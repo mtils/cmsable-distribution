@@ -112,7 +112,9 @@ class TypeIntrospectorCaster
                 $date->setTime(0,0,0);
                 return $date;
             }
+
             return $date;
+
         }
 
 
