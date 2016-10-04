@@ -107,8 +107,11 @@ class TypeIntrospectorCaster
 
         // A very strict check on dates vs. times
         if ($this->looksLikeADate($key, $value)) {
-            $date = DateTime::createFromFormat($this->lang->get('ems::base.date-format'), $value);
-            $date->setTime(0,0,0);
+
+            if($date = DateTime::createFromFormat($this->lang->get('ems::base.date-format'), $value)) {
+                $date->setTime(0,0,0);
+                return $date;
+            }
             return $date;
         }
 
