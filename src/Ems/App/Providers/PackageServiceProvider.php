@@ -513,11 +513,11 @@ class PackageServiceProvider extends ServiceProvider
     protected function registerInputCorrectors($corrector)
     {
 
-        $corrector->add('nested', function($input) {
+        $corrector->extend('nested', function($input) {
             return NestedArray::toNested($input, '.');
         });
 
-        $corrector->add('dotted', function($input) {
+        $corrector->extend('dotted', function($input) {
 
             $cleaned = [];
             foreach ($input as $key=>$value) {
@@ -534,7 +534,7 @@ class PackageServiceProvider extends ServiceProvider
     protected function registerInputCasters($caster)
     {
 
-        $caster->add('no_leading_underscore', function($input) {
+        $caster->extend('no_leading_underscore', function($input) {
 
             $cleaned = [];
             foreach ($input as $key=>$value) {
@@ -548,7 +548,7 @@ class PackageServiceProvider extends ServiceProvider
 
         });
 
-        $caster->add('no_actions', function($input) {
+        $caster->extend('no_actions', function($input) {
 
             $cleaned = [];
             foreach ($input as $key=>$value) {
@@ -562,7 +562,7 @@ class PackageServiceProvider extends ServiceProvider
 
         });
 
-        $caster->add('no_confirmations', function($input) {
+        $caster->extend('no_confirmations', function($input) {
 
             $cleaned = [];
             foreach ($input as $key=>$value) {
@@ -578,7 +578,7 @@ class PackageServiceProvider extends ServiceProvider
 
         $xtypeCaster = $this->app->make('Ems\App\Services\Casting\TypeIntrospectorCaster');
 
-        $caster->add('xtype_caster', $xtypeCaster);
+        $caster->extend('xtype_caster', $xtypeCaster);
 
     }
 

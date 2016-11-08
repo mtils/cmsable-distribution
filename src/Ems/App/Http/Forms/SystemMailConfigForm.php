@@ -5,7 +5,7 @@ namespace Ems\App\Http\Forms;
 
 use FormObject\Form;
 use FormObject\Field\Action;
-use Ems\Contracts\Core\ResourceProvider as Templates;
+use Ems\Contracts\Core\AllProvider as Templates;
 use Ems\Contracts\Mail\MessageContentProvider as Contents;
 use Ems\App\Contracts\Cms\VariableProvider;
 use Ems\Contracts\Mail\MailConfig;
@@ -14,7 +14,7 @@ class SystemMailConfigForm extends Form
 {
 
     /**
-     * @var \Ems\Contracts\Core\ResourceProvider
+     * @var \Ems\Contracts\Core\AllProvider
      **/
     protected $templates;
 
