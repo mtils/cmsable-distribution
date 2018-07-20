@@ -3,7 +3,7 @@
 use Mockery as m;
 use Ems\App\Validators\PasswordEmailValidator;
 
-class PasswordEmailValidatorTest extends PHPUnit_Framework_TestCase
+class PasswordEmailValidatorTest extends PHPUnit\Framework\TestCase
 {
 
     public function test()
