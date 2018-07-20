@@ -7,7 +7,7 @@ use DateTime;
 use Cmsable\Resource\BeeTreeRepository;
 use Ems\App\Contracts\Mail\SystemMailConfigRepository;
 use Ems\Contracts\Mail\MailConfigProvider;
-use Ems\Core\ResourceNotFoundException;
+use Ems\Core\Exceptions\ResourceNotFoundException;
 use Ems\App\MailConfig;
 use Ems\App\MailContent;
 use Permit\CurrentUser\ContainerInterface as Auth;

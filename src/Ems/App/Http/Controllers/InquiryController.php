@@ -51,6 +51,7 @@ class InquiryController extends Controller
 
         $data = $request->cleaned();
 
+
         $topic = isset($data['topic']) && $data['topic'] ? $data['topic'] : '1';
 
         $recipient = $this->recipients->recipientsFor($topic)[0];
