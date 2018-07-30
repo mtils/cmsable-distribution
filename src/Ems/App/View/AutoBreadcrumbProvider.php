@@ -4,6 +4,7 @@
 namespace Ems\App\View;
 
 use Cmsable\Resource\ResourceBus;
+use function func_get_args;
 use Versatile\View\Contracts\ModelPresenter;
 use Cmsable\Resource\Contracts\Mapper;
 use Cmsable\Resource\Contracts\ModelClassFinder as ClassFinderContract;
@@ -170,7 +171,7 @@ class AutoBreadcrumbProvider
 
     protected function installResourceListeners()
     {
-        $this->listen('resource::*.found', function($model) {
+        $this->listen('resource::*.found', function($model) {  //}, $args) {
             $resourceName = $this->modelToResource($model);
             $cacheId = $this->cacheId($resourceName, $model->getKey());
             $this->resourceCache[$cacheId] = $model;

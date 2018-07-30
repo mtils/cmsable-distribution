@@ -212,7 +212,7 @@ class PackageServiceProvider extends ServiceProvider
 
                 $intendedUrl = $this->app['url']->full();
                 if (!str_contains($intendedUrl, '_debugbar')) {
-                    $this->app['session']->set('url.intended', $intendedUrl);
+                    $this->app['session']->put('url.intended', $intendedUrl);
                 }
 
                 $this->app['Cmsable\View\Contracts\Notifier']->error($this->app['translator']->get('ems::messages.pages/current.not-authenticated'));

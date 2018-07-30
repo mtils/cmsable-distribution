@@ -11,7 +11,7 @@ use Cmsable\Widgets\Contracts\WidgetItem;
 use Cmsable\Widgets\Contracts\AreaRepository;
 use Illuminate\Contracts\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Symfony\Component\Translation\TranslatorInterface as Translator;
+use Illuminate\Translation\Translator;
 use FileDB\Model\FileDBModelInterface as FileDB;
 use Ems\App\Http\Forms\Fields\NestedSelectField;
 use Cmsable\Model\SiteTreeModelInterface;
@@ -28,7 +28,7 @@ class ContentBoxWidget extends AbstractWidget
     public static $typeId = 'cmsable.widgets.content-box';
 
     /**
-     * @var \Symfony\Component\Translation\TranslatorInterface
+     * @var Translator
      **/
     protected $lang;
 

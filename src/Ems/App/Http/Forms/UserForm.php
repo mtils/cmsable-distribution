@@ -22,7 +22,7 @@ class UserForm extends Form
     public function setModel($model)
     {
         $this->fillByArray($model->toArray());
-        $this->fillByArray(['ids'=>$model->groups()->getRelatedIds()], 'groups');
+        $this->fillByArray(['ids'=>$model->groups()->allRelatedIds()], 'groups');
         return parent::setModel($model);
     }
 

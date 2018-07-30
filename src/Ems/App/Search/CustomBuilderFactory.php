@@ -3,11 +3,12 @@
 namespace Ems\App\Search;
 
 
+use Cmsable\Support\FindsClasses;
 use Versatile\Search\BuilderSearch as BaseBuilderSearch;
 use Versatile\Search\Contracts\Criteria as CriteriaContract;
 use Cmsable\Resource\ResourceBus;
 use Illuminate\Contracts\Container\Container;
-use Signal\Support\FindsClasses;
+
 
 class CustomBuilderFactory
 {
@@ -71,10 +72,10 @@ class CustomBuilderFactory
     protected function makeDefaultBuilder(CriteriaContract $criteria)
     {
         $modelClass = $criteria->modelClass();
-        $builder = $this->app->make('Versatile\Query\Builder', [new $modelClass]);
+        $builder = $this->app->make('Versatile\Query\Builder', ['model' => new $modelClass]);
         return $this->app->make('Versatile\Search\BuilderSearch',[
-            $builder,
-            $criteria
+            'builder'  => $builder,
+            'criteria' => $criteria
         ]);
     }
 
