@@ -26,7 +26,7 @@
                                     @if($page->isRootNode())
                                     <option value="{{ $page->id }}">Seite auf oberster Ebene anlegen</option>
                                     @else
-                                        <option class="depth-<?= $page->getDepth() ?>" value="{{ $page->id }}" @if($parent_id == $page->id)selected="selected"@endif>{{ $page->menu_title }}</option>
+                                        <option class="depth-<?= $page->getDepth() ?>" value="{{ $page->id }}" @if($parentId == $page->id)selected="selected"@endif>{{ $page->menu_title }}</option>
                                     @endif
                                 @endforeach
                             </select>

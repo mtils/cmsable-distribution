@@ -1,6 +1,7 @@
     <? use Illuminate\Pagination\AbstractPaginator;$filterActions = isset($filterActions) ? $filterActions : false; ?>
     <? $context = isset($context) ? $context : 'default' ?>
     <? $fileInterface = 'FileDB\Model\FileInterface' ?>
+
     <table class="table table-bordered table-striped {{ $collection->cssClasses }}">
         <tr>
             @foreach($collection->columns as $col)
