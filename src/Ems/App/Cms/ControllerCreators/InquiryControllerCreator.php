@@ -40,14 +40,13 @@ class InquiryControllerCreator implements ControllerCreatorInterface
      **/
     public function createController($name, SiteTreeNodeInterface $page=NULL){
 
-
         $this->configureRecipients($page);
 
         $this->app->resolving('Ems\App\Http\Forms\InquiryForm', function($form) {
             $this->configureForm($form);
         });
 
-        return $this->app->make($name, [$this->recipients]);
+        return $this->app->make($name, ['recipients' => $this->recipients]);
 
     }
 
