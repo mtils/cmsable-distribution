@@ -101,14 +101,14 @@ function openModalIframe(url){
         $('#modal-ajax-content').html(html);
         $('#inline-modal').modal({show:true})
     });
-    
+
 //     $('#modal-iframe-frame').attr("src", url);
 
 //     $('#modal-iframe').on('show', function () {
 //         console.log(url);
 //         $('#modal-iframe-frame').attr("src", url);
 //     });
-    
+
 
 }
 
@@ -159,7 +159,7 @@ function formatResult (item) {
 
     for (var idx in item._keys) {
         var key = item._keys[idx];
-        markup += '<div class="col-sm-' + colWidth + '">' + item[key] + 
+        markup += '<div class="col-sm-' + colWidth + '">' + item[key] +
 '</div>';
     }
 
@@ -224,17 +224,31 @@ $(document).on('click','table.inline-edit a.row-add', function(event){
     return false;
 });
 
-function showModal(content, title) {
+function showModal(content, title, refresh) {
 
-    $('#inline-modal .modal-title').text(title);
-    $('#inline-modal .modal-body').html(content);
+    refresh = (typeof refresh !== 'undefined') ? refresh : false;
+
+    var $modalElement = $('#inline-modal');
+
+    $modalElement.find('.modal-title').text(title);
+    $modalElement.find('.modal-body').html(content);
+
+    // $('#inline-modal .modal-title').text(title);
+    // $('#inline-modal .modal-body').html(content);
+
     if ($(content).find('#overwritten-modal-footer').length) {
         $('#original-modal-footer').hide();
     } else {
         $('#original-modal-footer').show();
     }
 
-    $('#inline-modal').modal('show');
+    $modalElement.modal('show');
+
+    if (refresh) {
+        console.log('handleUpdate...');
+        $modalElement.modal('handleUpdate');
+        console.log('...finished');
+    }
 
 }
 
@@ -252,16 +266,15 @@ function selectWidget(ul)
     $.ajax({
         url: fullUrl,
         success: function(data, textStatus, xhr){
-            showModal(data, modalTitle);
+            showModal(data, modalTitle, true);
         }
     }).done(function(){
-        
     });
 }
 
 function editWidgetItem(itemDiv)
 {
-    $itemDiv = $(itemDiv);
+    var $itemDiv = $(itemDiv);
 
     var modalTitle = $itemDiv.data('modal-title');
     var url = $itemDiv.data('edit-url');
@@ -271,15 +284,13 @@ function editWidgetItem(itemDiv)
     postData['id'] = itemId;
     postData['input_prefix'] = $itemDiv.data('input-prefix');
     postData['handle'] = $itemDiv.data('handle');
-    
-    console.log('adding', postData)
 
     $.ajax({
         type: 'POST',
         url: url,
         data: postData,
         success: function(data, textStatus, xhr){
-            showModal(data, modalTitle);
+            showModal(data, modalTitle, true);
         }
     });
 }
