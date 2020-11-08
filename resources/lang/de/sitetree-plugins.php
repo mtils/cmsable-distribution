@@ -25,6 +25,9 @@ return [
     ],
     'blog-page' => [
         'filter_tags_ids' => ['title'=>'Nur Blog Einträge mit diesen Stichwörtern anzeigen']
+    ],
+    'widget-anchor-plugin' => [
+        'no-pages-with-areas'   => 'Keine Seiten mit Komponenten gefunden',
+        'area-containing-widgets'   => 'Bereich welcher die Komponenten enthält'
     ]
-
 ];
