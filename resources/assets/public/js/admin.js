@@ -255,13 +255,37 @@ function showModal(content, title, refresh) {
 function selectWidget(ul)
 {
 
-    $ul = $(ul);
+    var $ul = $(ul);
     var url = $ul.data('select-url');
     var modalTitle = $ul.data('modal-title');
     var handle = $ul.data('handle');
     var inputPrefix = $ul.data('widget-config-name');
 
     var fullUrl = url + '?handle=' + handle + '&input_prefix=' + inputPrefix;
+
+    $.ajax({
+        url: fullUrl,
+        success: function(data, textStatus, xhr){
+            showModal(data, modalTitle, true);
+        }
+    }).done(function(){
+    });
+}
+
+function changeWidgetItem(ul)
+{
+
+    var $ul = $(ul);
+    var url = $ul.data('select-url');
+    var modalTitle = $ul.data('modal-title');
+    var handle = $ul.data('handle');
+    var areaId = $ul.data('area-id');
+    var inputPrefix = $ul.data('widget-config-name');
+
+    var fullUrl = url + '?handle=' + handle + '&input_prefix=' + inputPrefix;
+    if (areaId) {
+       fullUrl = fullUrl + '&area_id=' + areaId;
+    }
 
     $.ajax({
         url: fullUrl,
@@ -294,6 +318,41 @@ function editWidgetItem(itemDiv)
         }
     });
 }
+
+function selectWidgetItem(itemDiv)
+{
+    var $itemDiv = $(itemDiv);
+    var itemId = $itemDiv.data('id');
+
+    var widgetSelected = new CustomEvent('widgetSelected', {
+        bubbles: true,
+        detail: {
+            id: itemId,
+            input_prefix: $itemDiv.data('input-prefix'),
+            handle: $itemDiv.data('handle'),
+            html: itemDiv[0].outerHTML
+        }
+    });
+
+    itemDiv[0].dispatchEvent(widgetSelected);
+
+    $('#inline-modal').modal('hide');
+
+}
+
+function replacePreviewWidget(widgetsParent, itemDiv, widgetId)
+{
+    /**
+     * 1. replace widgetsParent.data('area-id')
+     * 2. parse widgetsParent.data('show-url).replace('%id%, widgetId)
+     * 3. set value hidden input ($handle_item_id) to widgetId
+     * 4. load widget content by ajax and replace innerHtml
+     * 5. update the onclick handler of replaced html
+     *
+     * Almost equal to the event listener in select.blade.php!
+     */
+}
+
 
 function updateWidgetData(div)
 {
@@ -526,6 +585,10 @@ $(function () {
             reserializeWidgetListLayout(this)
         }
     }).disableSelection();
+
+    $('select.widget-area-loader').on('change', function () {
+        console.log('Value changed to: ' + $(this).val());
+    });
 
     /**
      * Save the sidebar state

@@ -13,7 +13,8 @@ return [
     ],
     'widgets' => [
         'add'           => 'Inhalt hinzufügen',
-        'create-widget' => ':widgetTitle hinzufügen'
+        'create-widget' => ':widgetTitle hinzufügen',
+        'select-item'   => 'Bestehenden Inhalt auswählen',
     ],
     'users' => [
         'show'              => 'Benutzer-Details',
