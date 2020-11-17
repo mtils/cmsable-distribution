@@ -340,7 +340,13 @@ function selectWidgetItem(itemDiv)
 
 }
 
-function replacePreviewWidget(widgetsParent, itemDiv, widgetId)
+/**
+ *
+ * @param {jQuery} $widgetsList
+ * @param {jQuery} $widgetFrame
+ * @param {string} areaId
+ */
+function replacePreviewWidget($widgetsList, $widgetFrame, areaId)
 {
     /**
      * 1. replace widgetsParent.data('area-id')
@@ -351,6 +357,38 @@ function replacePreviewWidget(widgetsParent, itemDiv, widgetId)
      *
      * Almost equal to the event listener in select.blade.php!
      */
+
+    $widgetsList.data('area-id', areaId);
+    var url = $widgetsList.data('select-url');
+    var handle = $widgetsList.data('handle');
+    var inputPrefix = $widgetsList.data('widget-config-name');
+    var fullUrl = url + '?handle=' + handle + '&input_prefix=' + inputPrefix;
+    if (areaId) {
+        fullUrl = fullUrl + '&area_id=' + areaId;
+    }
+
+    $.ajax({
+        url: fullUrl,
+        success: function(data, textStatus, xhr) {
+
+            var $newWidgetFrame = $(data).find('.widget-frame');
+            //$widgetFrame.replaceWith($(data).find('.widget-frame').get(0).outerHTML);
+
+            var widgetSelected = new CustomEvent('widgetSelected', {
+                bubbles: true,
+                detail: {
+                    id: $newWidgetFrame.data('id'),
+                    input_prefix: inputPrefix,
+                    handle: handle,
+                    html: $newWidgetFrame.get(0).outerHTML
+                }
+            });
+
+            document.getElementById('modal-ajax-content').dispatchEvent(widgetSelected);
+        }
+    }).done(function(){
+    });
+
 }
 
 
@@ -587,7 +625,13 @@ $(function () {
     }).disableSelection();
 
     $('select.widget-area-loader').on('change', function () {
-        console.log('Value changed to: ' + $(this).val());
+        var $areaSelect = $(this);
+        var $widgetList = $areaSelect.closest('form.page-form').find('.widget-list');
+        var $widgetFrame = $widgetList.find('.widget-frame');
+        var selectOption = $areaSelect.val();
+        var widgetData = selectOption.split('|');
+        var areaId = widgetData[1];
+        replacePreviewWidget($widgetList, $widgetFrame, areaId);
     });
 
     /**

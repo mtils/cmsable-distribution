@@ -33,7 +33,7 @@ $widgets = App::make(WidgetRegistry::class);
                     </li>
 
                 </ul>
-                <input type="hidden" id="{{ $handle }}_item_id" name="{{ $layoutName }}" value="{{ $field->getValue() }}"/>
+                <input type="hidden" id="{{ $handle }}_item_id" name="{{ $field->getName() }}" value="{{ $field->getValue() }}"/>
     <script>
         document.getElementById('inline-modal').addEventListener('widgetSelected', function (event) {
             if (event.detail.input_prefix !== '{{ $inputPrefix }}') {
