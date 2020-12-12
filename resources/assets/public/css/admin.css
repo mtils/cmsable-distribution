@@ -59,7 +59,7 @@ form .tab-content {
     font-weight: bold;
 }
 
-.content-header .nav .open > a, .content-header .nav .open > a:focus, 
+.content-header .nav .open > a, .content-header .nav .open > a:focus,
 .content-header .nav .open > a:hover {
     background-color: #E1E6EE;
     border-color: #337AB7;
@@ -91,6 +91,13 @@ form .tab-content {
     padding-bottom: 0px;
 }
 
+iframe.widget-window {
+    width: 200%; border: 0; overflow: hidden;
+    transform: scale(0.5, 0.5);
+    transform-origin: left top;
+    pointer-events: none;
+}
+
 .widget-item img.image-box {
     width: 100%;
 }
@@ -99,4 +106,43 @@ form .tab-content {
     margin-left: -28px;
     margin-top: -70px;
     padding: 0px 4px;
+}
+
+li.widget-item .box-body {
+    position:relative;
+    padding: 0;
+    pointer-events: bounding-box;
+}
+.box.widget-frame {
+    overflow: hidden;
+}
+
+.box-blocker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    transition: background-color 0.4s ease;
+}
+
+.box-blocker:hover {
+    background-color: #000;
+    opacity: 0.5;
+}
+
+.box-blocker .edit-icon {
+    position: absolute;
+    font-size: 84px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    color: #fff;
+}
+
+.box-blocker:hover .edit-icon {
+    opacity: 0.8;
 }

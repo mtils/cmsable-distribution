@@ -1,5 +1,7 @@
 <?php namespace Ems\App\Providers;
 
+use Cmsable\View\FallbackFileViewFinder;
+use Ems\Assets\Manager;
 use Illuminate\Support\ServiceProvider;
 use FormObject\Form;
 use Cmsable\Controller\SiteTree\SiteTreeController;
@@ -84,6 +86,11 @@ class PackageServiceProvider extends ServiceProvider
             $this->registerAssetPaths($registry);
         });
 
+        $this->app->afterResolving(Manager::class, function (Manager $manager) {
+            if (env('SKIP_ASSET_BUILDS')) {
+                $manager->bypassBuilds();
+            }
+        });
         $this->app->resolving('Ems\Contracts\Assets\BuildConfigRepository', function ($repo, $app) {
             $this->registerAssetBuilds($repo);
         });
@@ -126,7 +133,7 @@ class PackageServiceProvider extends ServiceProvider
 
         });
     }
-    
+
     protected function registerCustomValidatorRules()
     {
         $this->app->afterResolving('Illuminate\Contracts\Validation\Factory', function ($factory){
@@ -247,10 +254,16 @@ class PackageServiceProvider extends ServiceProvider
             $formRenderer = Form::getRenderer();
             $formRenderer->addPath("$adminThemePath/forms");
 
-            $this->app['view']->getFinder()->prependLocation($adminThemePath);
+            /** @var FallbackFileViewFinder $finder */
+            $finder = $this->app['view']->getFinder();
+            $finder->prependLocation($adminThemePath);
 
             if(!$appViewPath = $this->app['config']->get('view.paths')) {
                 return;
+            }
+
+            if (count($appViewPath)) {
+                $finder->addNamespace('theme', $appViewPath);
             }
 
             $appAdminViewPath = $appViewPath[0] . '/admin';
@@ -259,7 +272,7 @@ class PackageServiceProvider extends ServiceProvider
                 return;
             }
 
-            $this->app['view']->getFinder()->prependLocation($appAdminViewPath);
+            $finder->prependLocation($appAdminViewPath);
 
         });
 
@@ -352,7 +365,7 @@ class PackageServiceProvider extends ServiceProvider
     {
 
 //         $class = 'Cmsable\Controller\SiteTree\SiteTreeController';
-// 
+//
 //         $this->app->afterResolving($class, function($controller, $app){
 //             $controller->extend('jsConfig', function(&$jsConfig){
 //                 $this->addCKEditorRoute($jsConfig);

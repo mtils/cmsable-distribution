@@ -25,7 +25,7 @@
     <!-- jquery.contextMenu -->
     @asset('js/contextmenu/jquery.contextMenu.min.css')
 
-    <!-- AdminLTE Skins. Choose a skin from the css/skins 
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     @asset('AdminLTE/css/skins/_all-skins.min.css')
     @asset('css/admin.css')
@@ -36,8 +36,9 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-    
+
     @assets('css')
+    {{-- This is just an event hook to add some custom css --}}
     <style>{!! Render::css(); !!}</style>
     @show
   </head>

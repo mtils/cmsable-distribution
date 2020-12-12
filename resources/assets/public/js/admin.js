@@ -245,9 +245,7 @@ function showModal(content, title, refresh) {
     $modalElement.modal('show');
 
     if (refresh) {
-        console.log('handleUpdate...');
         $modalElement.modal('handleUpdate');
-        console.log('...finished');
     }
 
 }
