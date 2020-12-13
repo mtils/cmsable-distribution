@@ -20,10 +20,11 @@
      /** @var Widget $widget */
 
     ?>
-    @if($widgetItem->getData())
-        {!! $widget->render($widgetItem) !!}
-    @else
-        {!! $widget->renderPreview($widgetItem) !!}
+    @if(isset($widgetItem) && isset($widget))
+        @if($widgetItem->getData())
+            {!! $widget->render($widgetItem) !!}
+        @else
+            {!! $widget->renderPreview($widgetItem) !!}
+        @endif
     @endif
-
 </body>

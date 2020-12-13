@@ -117,7 +117,6 @@ assignToLastClickedImageField = function(id, url){
         jQuery(window.lastClickedImageField).find('input.image-db-field').attr('value',id);
         jQuery(window.lastClickedImageField).find('img').attr('src',url);
         jQuery(window.lastClickedImageField).find('a.remove').show();
-        console.log('ISCH');
     }
     window.lastClickedImageField = null;
 }
@@ -340,6 +339,31 @@ function selectWidgetItem(itemDiv)
 
 /**
  *
+ * @param {HTMLIFrameElement} widgetIframe
+ */
+function scaleWidgetIframe(widgetIframe) {
+    var iframeContentHeight = widgetIframe.contentWindow.document.body.scrollHeight;
+    var iframeScale = widgetIframe.getBoundingClientRect().height / widgetIframe.offsetHeight
+    var holderHeight = Math.round(iframeContentHeight * iframeScale);
+
+    widgetIframe.style.height = iframeContentHeight + 'px';
+    widgetIframe.parentElement.style.height = holderHeight + 'px';
+}
+
+/**
+ *
+ * @param {HTMLIFrameElement} targetFrame
+ * @param {string} preview
+ * @param {Object} data
+ */
+function updateWidgetState(targetFrame, preview, data) {
+    var targetDOM = targetFrame.contentWindow || targetFrame.contentDocument.document || targetFrame.contentDocument;
+    $('body', targetDOM.document).html(preview);
+    $(targetFrame).closest('.widget-item').find('input.widget-config').val(JSON.stringify(data));
+}
+
+/**
+ *
  * @param {jQuery} $widgetsList
  * @param {jQuery} $widgetFrame
  * @param {string} areaId
@@ -390,8 +414,9 @@ function replacePreviewWidget($widgetsList, $widgetFrame, areaId)
 }
 
 
-function updateWidgetData(div)
+function updateWidgetData(div, add)
 {
+    add = (typeof add !== 'undefined') ? add : false;
 
     var $form = $($(div).find('form')[0]);
     var formData = $form.serializeArray();
@@ -402,15 +427,13 @@ function updateWidgetData(div)
     var typeId = $(div).data('type-id');
     var itemId = $(div).data('id');
     var widgetConfigName = $('#' + handle).data('widget-config-name');
-    var widgetConfigSelector = '.' + $('#' + handle).data('widget-config-name') + '.widget-config';
-    var inputName = widgetConfigName + '[' + itemId + ']';
 
     for (var i in formData) {
         nativeData[formData[i]['name']] = formData[i]['value'];
     }
 
     nativeData['id'] = itemId;
-    nativeData['framed'] = true;
+    nativeData['framed'] = add;
     nativeData['handle'] = handle;
     nativeData['input_prefix'] = widgetConfigName;
 
@@ -419,16 +442,40 @@ function updateWidgetData(div)
         url: url,
         data: nativeData,
         success: function(data) {
+
             $form.find('.form-group').removeClass('has-error');
             nativeData['typeId'] = typeId;
-            var jsonData = JSON.stringify(nativeData);
+            var added = false;
+
             var $existingBox = $(handleSelector + ' div[data-id="' + itemId +'"]');
+
             if (!$existingBox.length) {
-                $('#' + handle).append('<li>' + data + '</li>');
+                $('#' + handle).append('<li class="widget-item">' + data['frame'] + '</li>');
                 reserializeWidgetListLayout(document.getElementById(handle));
-            } else {
-                $existingBox.replaceWith(data)
+                added = true;
+                console.log('Appended frame');
             }
+
+            var iframeId = data['iframe-id'];
+
+            /** @type HTMLIFrameElement **/
+            var targetFrame = document.getElementById(iframeId);
+
+            if (added) {
+                var head = targetFrame.contentWindow.document.getElementsByTagName('head')[0];
+                targetFrame.onload = function () {
+                    scaleWidgetIframe(targetFrame);
+                    $('#inline-modal').modal('hide');
+                };
+
+                $(head).html('<link href="' + data['css'] + '" rel="stylesheet">');
+                updateWidgetState(targetFrame, data['preview'], data['data']);
+
+                return;
+            }
+            updateWidgetState(targetFrame, data['preview'], data['data']);
+            scaleWidgetIframe(targetFrame);
+
             $('#inline-modal').modal('hide');
         },
         error: function(data){
@@ -630,6 +677,13 @@ $(function () {
         var widgetData = selectOption.split('|');
         var areaId = widgetData[1];
         replacePreviewWidget($widgetList, $widgetFrame, areaId);
+    });
+
+    $('iframe.widget-window').each(function () {
+        this.onload = function () {
+            scaleWidgetIframe(this);
+        };
+
     });
 
     /**

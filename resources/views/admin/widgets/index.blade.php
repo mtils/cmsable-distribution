@@ -8,7 +8,7 @@
     $handleParam = isset($handle) ? "?handle=$handle" : '';
     $createUrl = URL::route('widgets.items.create', [$widget->getTypeId()]) . "?handle=$handle&input_prefix=$inputPrefix";
     $draggable = false;
-    $previewMode = true;
+    $previewMode = 'plain';
 ?>
 <li>
     <? $widgetItem = $items->make($widget->getTypeId()) ?>
